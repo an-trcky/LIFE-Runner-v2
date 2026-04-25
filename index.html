@@ -847,6 +847,9 @@ function loadHistory(i) {
     last.querySelector(".prepayAge").value = p.age
     last.querySelector(".prepayAmount").value = p.amount
   })
+
+  // 👇これ追加
+  calculateAndRender()
 }
 
 function deleteHistory(i) {
