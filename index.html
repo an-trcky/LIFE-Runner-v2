@@ -1025,7 +1025,7 @@ function calculateAndRender() {
   let interestRate = Number(document.getElementById("interestRate").value) / 100
   let loanYears = Number(document.getElementById("loanYears").value)
   let repaymentType = document.getElementById("repaymentType").value
-
+　let recalcOption = document.getElementById("recalcOption").value
   let events = []
   document.querySelectorAll(".event").forEach(e => {
     events.push({
@@ -1084,68 +1084,105 @@ function calculateAndRender() {
   let currentIncome = income
   let currentExpenses = expenses
 
-  for (let year = pastYears + 1; year <= loanYears; year++) {
-    let currentAge = startAge + (year - pastYears - 1)
-    let appliedEvents = []
+  let monthlyPayment = 0
 
-    events.forEach(ev => {
-      if (ev.age === currentAge) {
-        const noteText = ev.note ? `（${ev.note}）` : ""
-        if (ev.type === "incomeAdd") { currentIncome += ev.amount; appliedEvents.push(`収入＋${ev.amount}${noteText}`) }
-        if (ev.type === "incomeSet") { currentIncome = ev.amount; appliedEvents.push(`収入→${ev.amount}${noteText}`) }
-        if (ev.type === "expenseAdd") { currentExpenses += ev.amount; appliedEvents.push(`支出＋${ev.amount}${noteText}`) }
-        if (ev.type === "expenseSet") { currentExpenses = ev.amount; appliedEvents.push(`支出→${ev.amount}${noteText}`) }
-        if (ev.type === "oneIncome") { cash += ev.amount; appliedEvents.push(`臨時収入＋${ev.amount}${noteText}`) }
-        if (ev.type === "oneExpense") { cash -= ev.amount; appliedEvents.push(`臨時支出−${ev.amount}${noteText}`) }
-      }
-    })
+for (let year = pastYears + 1; year <= loanYears; year++) {
+  let currentAge = startAge + (year - pastYears - 1)
 
-    let change = interestChanges.find(c => c.age === currentAge)
-    if (change) currentAnnualRate = change.rate
-    let monthlyRate = currentAnnualRate / 12
-    let remainingMonths = (loanYears - year + 1) * 12
-    let monthlyPayment = calculateMonthly(remainingLoan, monthlyRate, remainingMonths, repaymentType)
-    let yearlyPrincipal = 0
-    let yearlyInterest = 0
+  let rateChanged = false
+  let change = interestChanges.find(c => c.age === currentAge)
+  if (change) {
+    currentAnnualRate = change.rate
+    rateChanged = true
+  }
 
-    for (let month = 1; month <= 12; month++) {
-      cash += currentIncome
-      if (bonusMonths.includes(month)) {
-        cash += bonusAmount
-        let repay = Number(document.getElementById("bonusRepay").value)
-        let available = cash - emergencyTarget
-        if (repay > 0 && available > 0) {
-          let pay = Math.min(repay, remainingLoan, available)
-          remainingLoan -= pay; cash -= pay
+  let monthlyRate = currentAnnualRate / 12
+  let remainingMonths = (loanYears - year + 1) * 12
+
+  if (year === pastYears + 1 || rateChanged) {
+    monthlyPayment = calculateMonthly(
+      remainingLoan,
+      monthlyRate,
+      remainingMonths,
+      repaymentType
+    )
+  }
+
+  let yearlyPrincipal = 0
+  let yearlyInterest = 0
+
+  for (let month = 1; month <= 12; month++) {
+
+    cash += currentIncome
+
+    if (bonusMonths.includes(month)) {
+      cash += bonusAmount
+
+      let repay = Number(document.getElementById("bonusRepay").value)
+      let available = cash - emergencyTarget
+
+      if (repay > 0 && available > 0) {
+        let pay = Math.min(repay, remainingLoan, available)
+        remainingLoan -= pay
+        cash -= pay
+
+        if (recalcOption === "reduce") {
+          let newRemainingMonths =
+            (loanYears - year) * 12 + (12 - month)
+
+          monthlyPayment = calculateMonthly(
+            remainingLoan,
+            monthlyRate,
+            newRemainingMonths,
+            repaymentType
+          )
         }
       }
-      cash -= currentExpenses
-      let interest = remainingLoan * monthlyRate
-      let principal = monthlyPayment - interest
-      principal = Math.min(principal, remainingLoan)
-      remainingLoan -= principal
-      yearlyPrincipal += principal
-      yearlyInterest += interest
-      cash -= monthlyPayment
-      let available = cash - emergencyTarget
-      if (available > 0) {
-        let investAmount = Math.min(investmentSetting, available)
-        cash -= investAmount; invested += investAmount; investedPrincipal += investAmount
-      }
-      invested *= (1 + investmentReturn / 12)
     }
 
-    prepayList.forEach(p => {
-      if (currentAge === p.age) {
-        let available = cash - emergencyTarget
-        let repay = Math.min(p.amount, remainingLoan, available)
-        remainingLoan -= repay; cash -= repay
-      }
-    })
+    cash -= currentExpenses
 
-    let totalAsset = cash + invested
-    let prevTotalAsset = history.length > 0 ? history[history.length - 1].totalAsset : null
-    let diff = prevTotalAsset !== null ? totalAsset - prevTotalAsset : null
+    let interest = remainingLoan * monthlyRate
+    let principal = monthlyPayment - interest
+    principal = Math.min(principal, remainingLoan)
+
+    remainingLoan -= principal
+    yearlyPrincipal += principal
+    yearlyInterest += interest
+
+    cash -= monthlyPayment
+
+    let available = cash - emergencyTarget
+    if (available > 0) {
+      let investAmount = Math.min(investmentSetting, available)
+      cash -= investAmount
+      invested += investAmount
+      investedPrincipal += investAmount
+    }
+
+    invested *= (1 + investmentReturn / 12)
+  }
+
+  prepayList.forEach(p => {
+    if (currentAge === p.age) {
+      let available = cash - emergencyTarget
+      let repay = Math.min(p.amount, remainingLoan, available)
+
+      remainingLoan -= repay
+      cash -= repay
+
+      if (recalcOption === "reduce") {
+        let newRemainingMonths = (loanYears - year) * 12
+
+        monthlyPayment = calculateMonthly(
+          remainingLoan,
+          monthlyRate,
+          newRemainingMonths,
+          repaymentType
+        )
+      }
+    }
+  })
 
     history.push({
       age: currentAge, cash, invested, investedPrincipal,
