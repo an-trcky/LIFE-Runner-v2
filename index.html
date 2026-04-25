@@ -808,10 +808,44 @@ function renderSavedHistory() {
 function loadHistory(i) {
   let history = JSON.parse(localStorage.getItem("lifeRunnerSaved")) || []
   let h = history[i]
-  if (!h || !h.inputs) return
+  if (!h) return
+
+  // ===== 基本入力復元 =====
   Object.keys(h.inputs).forEach(k => {
     let el = document.getElementById(k)
     if (el) el.value = h.inputs[k]
+  })
+
+  // ===== イベント復元 =====
+  const eventContainer = document.getElementById("eventList")
+  eventContainer.innerHTML = ""
+  h.events?.forEach(ev => {
+    addEvent()
+    let last = eventContainer.lastElementChild
+    last.querySelector(".age").value = ev.age
+    last.querySelector(".type").value = ev.type
+    last.querySelector(".amount").value = ev.amount
+    last.querySelector(".note").value = ev.note
+  })
+
+  // ===== 金利変動復元 =====
+  const rateContainer = document.getElementById("rateChangesContainer")
+  rateContainer.innerHTML = ""
+  h.rates?.forEach(r => {
+    addRateChange()
+    let last = rateContainer.lastElementChild
+    last.querySelector(".rateAge").value = r.age
+    last.querySelector(".rateValue").value = r.rate
+  })
+
+  // ===== 繰上げ返済復元 =====
+  const prepayContainer = document.getElementById("prepayListContainer")
+  prepayContainer.innerHTML = ""
+  h.prepays?.forEach(p => {
+    addPrepay()
+    let last = prepayContainer.lastElementChild
+    last.querySelector(".prepayAge").value = p.age
+    last.querySelector(".prepayAmount").value = p.amount
   })
 }
 
