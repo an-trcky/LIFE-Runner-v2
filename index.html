@@ -832,14 +832,52 @@ runBtn.addEventListener("click", () => {
 })
 
 document.getElementById("saveBtn").addEventListener("click", () => {
-  if (!window.latestResult) { alert("先にシミュレーションしてください"); return }
+  if (!window.latestResult) {
+    alert("先にシミュレーションしてください")
+    return
+  }
+
   let title = prompt("タイトルを入力（任意）")
-  if (!title || title.trim() === "") title = "無題（" + new Date().toLocaleDateString() + "）"
+  if (!title || title.trim() === "") {
+    title = "無題（" + new Date().toLocaleDateString() + "）"
+  }
+
+  // ===== 追加：イベント取得 =====
+  let events = []
+  document.querySelectorAll(".event").forEach(e => {
+    events.push({
+      age: e.querySelector(".age").value,
+      type: e.querySelector(".type").value,
+      amount: e.querySelector(".amount").value,
+      note: e.querySelector(".note").value
+    })
+  })
+
+  // ===== 追加：金利変動 =====
+  let rates = []
+  document.querySelectorAll(".rateChangeRow").forEach(r => {
+    rates.push({
+      age: r.querySelector(".rateAge").value,
+      rate: r.querySelector(".rateValue").value
+    })
+  })
+
+  // ===== 追加：繰上げ返済 =====
+  let prepays = []
+  document.querySelectorAll(".prepayRow").forEach(p => {
+    prepays.push({
+      age: p.querySelector(".prepayAge").value,
+      amount: p.querySelector(".prepayAmount").value
+    })
+  })
+
   let history = JSON.parse(localStorage.getItem("lifeRunnerSaved")) || []
+
   history.unshift({
     title,
     net: window.latestResult.net,
     age: window.latestResult.age,
+
     inputs: {
       startAge: document.getElementById("startAge").value,
       loanStartAge: document.getElementById("loanStartAge").value,
@@ -854,8 +892,14 @@ document.getElementById("saveBtn").addEventListener("click", () => {
       loanAmount: document.getElementById("loanAmount").value,
       interestRate: document.getElementById("interestRate").value,
       loanYears: document.getElementById("loanYears").value
-    }
+    },
+
+    // 👇 ここが今回の本体
+    events,
+    rates,
+    prepays
   })
+
   localStorage.setItem("lifeRunnerSaved", JSON.stringify(history))
   renderSavedHistory()
 })
