@@ -3,744 +3,748 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>LIFE Runner</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  :root {
-    --sky: #e0f4ff;
-    --sky-mid: #b8e4f9;
-    --blue: #3b9edd;
-    --blue-dark: #1e7bbf;
-    --green: #4cba8b;
-    --green-light: #d4f3e7;
-    --coral: #ff7259;
-    --coral-light: #ffe5e0;
-    --yellow: #ffc84a;
-    --yellow-light: #fff4d4;
-    --purple: #9b7fe8;
-    --purple-light: #ede8fb;
-    --bg: #f0f8ff;
-    --card: #ffffff;
-    --text: #2d3a4a;
-    --text-light: #7a90a4;
-    --border: #d8eaf6;
-    --shadow: 0 4px 20px rgba(59,158,221,0.10);
-    --radius: 18px;
-    --radius-sm: 12px;
-  }
-
-- { box-sizing: border-box; margin: 0; padding: 0; }
-
+:root {
+  --teal:        #1ec8b0;
+  --teal-dark:   #0ea898;
+  --teal-soft:   #e4faf7;
+  --blue:        #3b9edd;
+  --blue-soft:   #e6f3fd;
+  --green:       #3dba8c;
+  --green-soft:  #e4f5ee;
+  --orange:      #ff8c42;
+  --orange-soft: #fff1e6;
+  --red:         #ff5f5f;
+  --red-soft:    #fff0f0;
+  --yellow:      #ffc130;
+  --yellow-soft: #fffbe6;
+  --purple:      #7c6cf0;
+  --purple-soft: #f0eeff;
+  --bg:          #f2f7fc;
+  --card:        #ffffff;
+  --text:        #1a2a3a;
+  --text-mid:    #5a7a96;
+  --text-light:  #9ab0c4;
+  --border:      #d8eaf5;
+  --r:           18px;
+  --r-sm:        12px;
+  --shadow:      0 2px 14px rgba(20,80,160,.08);
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { -webkit-text-size-adjust:100%; }
 body {
-font-family: ‘Noto Sans JP’, sans-serif;
-background: var(–bg);
-color: var(–text);
-min-height: 100vh;
-padding-bottom: 60px;
+  font-family:'Noto Sans JP',sans-serif;
+  background:var(--bg); color:var(--text);
+  min-height:100vh;
+  max-width:480px; margin:0 auto;
 }
 
-/* ===== HEADER ===== */
-.header {
-background: linear-gradient(135deg, #3b9edd 0%, #2ec4b6 100%);
-padding: 32px 20px 48px;
-text-align: center;
-position: relative;
-overflow: hidden;
-}
-.header::before {
-content: ‘’;
-position: absolute;
-top: -40px; right: -40px;
-width: 200px; height: 200px;
-background: rgba(255,255,255,0.10);
-border-radius: 50%;
-}
-.header::after {
-content: ‘’;
-position: absolute;
-bottom: -60px; left: -30px;
-width: 160px; height: 160px;
-background: rgba(255,255,255,0.08);
-border-radius: 50%;
-}
-.header-emoji {
-font-size: 40px;
-display: block;
-margin-bottom: 8px;
-animation: float 3s ease-in-out infinite;
-}
-@keyframes float {
-0%,100% { transform: translateY(0); }
-50% { transform: translateY(-6px); }
-}
-.header h1 {
-font-family: ‘Nunito’, sans-serif;
-font-weight: 900;
-font-size: 32px;
-color: white;
-letter-spacing: 1px;
-}
-.header-sub {
-color: rgba(255,255,255,0.85);
-font-size: 13px;
-margin-top: 6px;
+/* ===== PAGE SWITCH ===== */
+.page { display:none; }
+.page.active { display:block; animation:fadeUp .3s ease; }
+@keyframes fadeUp {
+from { opacity:0; transform:translateY(16px); }
+to   { opacity:1; transform:none; }
 }
 
-/* ===== WAVE ===== */
-.wave-divider {
-background: linear-gradient(135deg, #3b9edd 0%, #2ec4b6 100%);
-line-height: 0;
+/* ===== SPLASH ===== */
+.splash {
+background:linear-gradient(135deg, #0ea898 0%, #3b9edd 55%, #7c6cf0 100%);
+padding:40px 24px 52px;
+position:relative; overflow:hidden;
 }
-.wave-divider svg { display: block; }
+.splash-blob1 {
+position:absolute; top:-50px; right:-50px;
+width:200px; height:200px;
+background:rgba(255,255,255,.09); border-radius:50%;
+}
+.splash-blob2 {
+position:absolute; bottom:-70px; left:-40px;
+width:220px; height:220px;
+background:rgba(255,255,255,.06); border-radius:50%;
+}
+.logo-row {
+display:flex; align-items:center; gap:14px;
+position:relative; z-index:1;
+}
+.logo-icon {
+width:58px; height:58px;
+background:rgba(255,255,255,.2);
+border:1.5px solid rgba(255,255,255,.35);
+border-radius:18px;
+display:flex; align-items:center; justify-content:center;
+font-size:30px;
+animation:float 3s ease-in-out infinite;
+}
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+.logo-text h1 {
+font-family:‘Nunito’,sans-serif;
+font-weight:900; font-size:30px; color:#fff; line-height:1;
+}
+.logo-text p { color:rgba(255,255,255,.8); font-size:12px; margin-top:5px; line-height:1.5; }
+.splash-tag {
+display:inline-flex; align-items:center; gap:6px;
+background:rgba(255,255,255,.18);
+border:1px solid rgba(255,255,255,.3);
+color:rgba(255,255,255,.92);
+font-size:12px; font-weight:700;
+padding:6px 14px; border-radius:20px;
+margin-top:20px; position:relative; z-index:1;
+}
 
-/* ===== MAIN LAYOUT ===== */
-.main {
-max-width: 600px;
-margin: 0 auto;
-padding: 0 16px;
-margin-top: -4px;
-}
+.wave { line-height:0; background:linear-gradient(135deg,#0ea898,#3b9edd,#7c6cf0); }
+.wave svg { display:block; }
 
-/* ===== SECTION LABEL ===== */
-.section-label {
-display: flex;
-align-items: center;
-gap: 8px;
-font-family: ‘Nunito’, sans-serif;
-font-weight: 800;
-font-size: 15px;
-color: var(–blue-dark);
-margin: 24px 0 10px;
+/* ===== SECTION ===== */
+.wrap { padding:0 16px 100px; }
+
+.sec-head {
+display:flex; align-items:center; gap:10px;
+margin:24px 0 10px;
 }
-.section-label .dot {
-width: 10px; height: 10px;
-background: var(–blue);
-border-radius: 50%;
-flex-shrink: 0;
+.sec-icon {
+width:34px; height:34px; border-radius:10px;
+display:flex; align-items:center; justify-content:center;
+font-size:18px; flex-shrink:0;
 }
+.sec-head h2 {
+font-family:‘Nunito’,sans-serif;
+font-weight:800; font-size:16px; flex:1;
+}
+.sec-head .sec-sub { font-size:11px; color:var(–text-light); margin-top:1px; }
 
 /* ===== CARD ===== */
 .card {
-background: var(–card);
-border-radius: var(–radius);
-box-shadow: var(–shadow);
-padding: 20px;
-margin-bottom: 16px;
-border: 1.5px solid var(–border);
-transition: transform 0.2s, box-shadow 0.2s;
-}
-.card:hover {
-transform: translateY(-2px);
-box-shadow: 0 8px 28px rgba(59,158,221,0.15);
+background:var(–card);
+border-radius:var(–r);
+box-shadow:var(–shadow);
+padding:18px;
+margin-bottom:12px;
+border:1.5px solid var(–border);
 }
 
-.card-title {
-font-family: ‘Nunito’, sans-serif;
-font-weight: 800;
-font-size: 16px;
-margin-bottom: 16px;
-display: flex;
-align-items: center;
-gap: 8px;
-color: var(–text);
-}
-.card-title .badge {
-background: var(–sky);
-color: var(–blue-dark);
-font-size: 11px;
-font-weight: 700;
-padding: 2px 8px;
-border-radius: 20px;
-}
+/* ===== FIELD ===== */
+.row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.row3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
 
-/* ===== INPUT GROUP ===== */
-.input-group {
-margin-bottom: 14px;
+.field { margin-bottom:0; }
+.field label {
+display:block;
+font-size:11px; font-weight:700; color:var(–text-mid);
+margin-bottom:5px;
 }
-.input-group label {
-display: block;
-font-size: 12px;
-font-weight: 700;
-color: var(–text-light);
-margin-bottom: 5px;
-letter-spacing: 0.3px;
+.field label .sub {
+font-weight:500; color:var(–text-light);
+background:var(–bg); padding:1px 6px;
+border-radius:6px; font-size:10px; margin-left:4px;
 }
-.input-group input,
-.input-group select {
-width: 100%;
-padding: 10px 14px;
-border: 2px solid var(–border);
-border-radius: var(–radius-sm);
-font-size: 15px;
-font-family: ‘Noto Sans JP’, sans-serif;
-color: var(–text);
-background: #f8fcff;
-transition: border-color 0.2s, box-shadow 0.2s;
-outline: none;
+.input-wrap { position:relative; }
+.input-unit {
+position:absolute; right:10px; top:50%; transform:translateY(-50%);
+font-size:12px; font-weight:700; color:var(–text-light);
+pointer-events:none;
 }
-.input-group input:focus,
-.input-group select:focus {
-border-color: var(–blue);
-box-shadow: 0 0 0 3px rgba(59,158,221,0.15);
-background: white;
+.field input, .field select {
+width:100%;
+padding:11px 30px 11px 12px;
+border:2px solid var(–border);
+border-radius:var(–r-sm);
+font-size:15px;
+font-family:‘Noto Sans JP’,sans-serif;
+color:var(–text);
+background:#fafcff;
+outline:none;
+-webkit-appearance:none;
+transition:border-color .18s, box-shadow .18s;
 }
+.field input:focus, .field select:focus {
+border-color:var(–teal);
+box-shadow:0 0 0 3px rgba(30,200,176,.14);
+background:#fff;
+}
+.field select {
+background-image:url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘11’ height=‘7’%3E%3Cpath d=‘M1 1l4.5 4.5L10 1’ stroke=’%239ab0c4’ stroke-width=‘1.5’ fill=‘none’ stroke-linecap=‘round’/%3E%3C/svg%3E”);
+background-repeat:no-repeat;
+background-position:right 10px center;
+}
+.grid-gap { display:grid; gap:10px; }
 
-.input-row {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 12px;
+/* ===== TOGGLE ===== */
+.tog-btn {
+width:100%; display:flex; align-items:center;
+justify-content:space-between;
+padding:13px 16px; border-radius:var(–r-sm);
+border:1.5px solid transparent;
+cursor:pointer; user-select:none;
+font-family:‘Nunito’,sans-serif;
+font-weight:800; font-size:13px;
+transition:opacity .15s; text-align:left;
 }
+.tog-btn:active { opacity:.8; }
+.tog-btn .tl { display:flex; align-items:center; gap:8px; }
+.tog-arr { font-style:normal; transition:transform .28s; font-size:11px; opacity:.6; }
+.tog-arr.open { transform:rotate(180deg); }
+.tb-teal   { background:var(–teal-soft);   color:#0a7870; border-color:#a8e8e0; }
+.tb-blue   { background:var(–blue-soft);   color:#1060a0; border-color:#b0d5f0; }
+.tb-yellow { background:var(–yellow-soft); color:#806000; border-color:#ffe080; }
+.tb-green  { background:var(–green-soft);  color:#106040; border-color:#a0dcc0; }
+.tb-orange { background:var(–orange-soft); color:#903010; border-color:#ffc090; }
 
-/* ===== TOGGLE SECTION ===== */
-.toggle-header {
-display: flex;
-align-items: center;
-justify-content: space-between;
-cursor: pointer;
-padding: 14px 18px;
-background: var(–sky);
-border-radius: var(–radius-sm);
-margin-bottom: 0;
-border: 2px solid var(–sky-mid);
-transition: background 0.2s;
-user-select: none;
-}
-.toggle-header:hover { background: var(–sky-mid); }
-.toggle-header .toggle-title {
-font-family: ‘Nunito’, sans-serif;
-font-weight: 800;
-font-size: 15px;
-color: var(–blue-dark);
-display: flex;
-align-items: center;
-gap: 8px;
-}
-.toggle-arrow {
-font-size: 18px;
-transition: transform 0.3s;
-color: var(–blue);
-}
-.toggle-arrow.open { transform: rotate(180deg); }
+.tog-body { display:none; padding-top:12px; }
+.tog-body.open { display:block; }
 
-.toggle-body {
-display: none;
-margin-top: 14px;
-}
-.toggle-body.open { display: block; }
-
-/* ===== ADD BUTTON ===== */
+/* ===== ADD BTN ===== */
 .add-btn {
-display: flex;
-align-items: center;
-gap: 6px;
-padding: 10px 16px;
-background: white;
-border: 2px dashed var(–blue);
-border-radius: var(–radius-sm);
-color: var(–blue);
-font-weight: 700;
-font-size: 14px;
-cursor: pointer;
-width: 100%;
-justify-content: center;
-transition: background 0.2s, transform 0.1s;
-margin-top: 10px;
-font-family: ‘Noto Sans JP’, sans-serif;
+width:100%; padding:11px;
+background:#fff; border:2px dashed var(–teal);
+border-radius:var(–r-sm);
+color:var(–teal-dark); font-weight:700; font-size:13px;
+cursor:pointer; display:flex; align-items:center;
+justify-content:center; gap:6px; margin-top:8px;
+transition:background .18s;
+font-family:‘Noto Sans JP’,sans-serif;
 }
-.add-btn:hover { background: var(–sky); }
-.add-btn:active { transform: scale(0.97); }
+.add-btn:hover { background:var(–teal-soft); }
 
-/* ===== ROW ITEM (rate change / prepay / event) ===== */
-.row-item {
-background: #f8fcff;
-border: 1.5px solid var(–border);
-border-radius: var(–radius-sm);
-padding: 14px;
-margin-bottom: 10px;
-position: relative;
+/* ===== DYNAMIC ROW ===== */
+.drow {
+background:#f6fafe; border:1.5px solid var(–border);
+border-radius:var(–r-sm); padding:12px 12px 8px;
+margin-bottom:8px; position:relative;
 }
-.row-item .delete-btn {
-position: absolute;
-top: 10px; right: 10px;
-background: var(–coral-light);
-color: var(–coral);
-border: none;
-border-radius: 8px;
-font-size: 12px;
-font-weight: 700;
-padding: 4px 10px;
-cursor: pointer;
-transition: background 0.2s;
-font-family: ‘Noto Sans JP’, sans-serif;
+.drow .del {
+position:absolute; top:10px; right:10px;
+background:var(–red-soft); color:var(–red);
+border:none; border-radius:8px;
+font-size:11px; font-weight:700; padding:4px 10px;
+cursor:pointer; font-family:‘Noto Sans JP’,sans-serif;
 }
-.row-item .delete-btn:hover { background: #ffcfc8; }
 
-/* ===== HINT TEXT ===== */
+/* ===== HINT ===== */
 .hint {
-font-size: 11px;
-color: var(–text-light);
-margin-top: 4px;
+font-size:11px; color:var(–text-light);
+line-height:1.6; margin-top:8px;
+padding:8px 12px; background:var(–bg);
+border-radius:8px; border-left:3px solid var(–teal);
 }
 
-/* ===== RUN BUTTON ===== */
-.run-btn-wrap {
-padding: 8px 0 24px;
-text-align: center;
-}
+/* ===== START BTN ===== */
+.start-wrap { padding:16px 16px 36px; }
 #runBtn {
-background: linear-gradient(135deg, #3b9edd 0%, #2ec4b6 100%);
-color: white;
-border: none;
-border-radius: 50px;
-padding: 18px 48px;
-font-family: ‘Nunito’, sans-serif;
-font-weight: 900;
-font-size: 18px;
-cursor: pointer;
-box-shadow: 0 6px 24px rgba(59,158,221,0.35);
-transition: transform 0.15s, box-shadow 0.15s;
-letter-spacing: 0.5px;
+width:100%; padding:18px;
+background:linear-gradient(135deg,#0ea898,#3b9edd);
+color:#fff; border:none; border-radius:50px;
+font-family:‘Nunito’,sans-serif;
+font-weight:900; font-size:19px;
+cursor:pointer; letter-spacing:.5px;
+box-shadow:0 6px 28px rgba(14,168,152,.35);
+transition:transform .14s, box-shadow .14s;
+display:flex; align-items:center; justify-content:center; gap:10px;
 }
-#runBtn:hover {
-transform: translateY(-2px);
-box-shadow: 0 10px 30px rgba(59,158,221,0.45);
-}
-#runBtn:active { transform: scale(0.96); }
+#runBtn:hover { transform:translateY(-2px); box-shadow:0 10px 36px rgba(14,168,152,.45); }
+#runBtn:active { transform:scale(.97); }
+.run-note { text-align:center; font-size:11px; color:var(–text-light); margin-top:8px; }
 
-/* ===== RESULT SECTION ===== */
-#resultSection { display: none; }
+/* ===== RESULT HEADER ===== */
+.result-splash {
+background:linear-gradient(135deg,#0ea898,#3b9edd,#7c6cf0);
+padding:20px 20px 48px;
+position:relative; overflow:hidden;
+}
+.result-splash::after {
+content:’’; position:absolute; bottom:-50px; right:-50px;
+width:180px; height:180px; background:rgba(255,255,255,.08); border-radius:50%;
+}
+.back-btn {
+display:inline-flex; align-items:center; gap:6px;
+background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.3);
+color:#fff; border-radius:20px; padding:7px 14px;
+font-size:12px; font-weight:700; cursor:pointer; margin-bottom:16px;
+font-family:‘Noto Sans JP’,sans-serif;
+}
+.result-splash h2 {
+font-family:‘Nunito’,sans-serif;
+font-weight:900; font-size:24px; color:#fff; position:relative; z-index:1;
+}
+.result-splash p { color:rgba(255,255,255,.78); font-size:12px; margin-top:4px; position:relative; z-index:1; }
 
-.result-header {
-text-align: center;
-padding: 24px 16px 8px;
+/* ===== TODAY ASSET ===== */
+.today-card {
+background:linear-gradient(135deg,#1a3560,#0d2040);
+border-radius:var(–r); padding:22px 20px;
+margin-bottom:12px; position:relative; overflow:hidden;
+border:1.5px solid rgba(255,255,255,.07);
 }
-.result-header h2 {
-font-family: ‘Nunito’, sans-serif;
-font-weight: 900;
-font-size: 22px;
-color: var(–blue-dark);
+.today-card::before {
+content:’’; position:absolute; top:-30px; right:-30px;
+width:120px; height:120px;
+background:rgba(30,200,176,.15); border-radius:50%;
+}
+.today-label { font-size:12px; color:rgba(255,255,255,.55); font-weight:600; margin-bottom:6px; }
+.today-value {
+font-family:‘Nunito’,sans-serif;
+font-weight:900; font-size:34px; color:#fff; position:relative; z-index:1;
+}
+.today-sub {
+display:flex; align-items:center; gap:8px;
+font-size:12px; color:rgba(255,255,255,.5); margin-top:6px;
+}
+.today-chip {
+background:rgba(30,200,176,.22); color:var(–teal);
+font-size:11px; font-weight:700; padding:2px 10px; border-radius:20px;
 }
 
-/* ===== KPI CARDS ===== */
-.kpi-grid {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 12px;
-margin-bottom: 16px;
+/* ===== KPI GRID ===== */
+.kpi-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+.kpi {
+border-radius:var(–r); padding:16px 14px;
+text-align:center; border:1.5px solid transparent;
 }
-.kpi-card {
-border-radius: var(–radius);
-padding: 18px 16px;
-text-align: center;
-}
-.kpi-card .kpi-label {
-font-size: 11px;
-font-weight: 700;
-opacity: 0.75;
-margin-bottom: 6px;
-letter-spacing: 0.3px;
-}
-.kpi-card .kpi-value {
-font-family: ‘Nunito’, sans-serif;
-font-weight: 900;
-font-size: 24px;
-line-height: 1;
-}
-.kpi-card .kpi-unit {
-font-size: 13px;
-font-weight: 700;
-opacity: 0.75;
-margin-top: 2px;
-}
-.kpi-blue { background: var(–sky); color: var(–blue-dark); }
-.kpi-green { background: var(–green-light); color: #1e7a55; }
-.kpi-coral { background: var(–coral-light); color: #c0392b; }
-.kpi-yellow { background: var(–yellow-light); color: #b07a00; }
+.kpi .kpi-icon { font-size:20px; margin-bottom:5px; display:block; }
+.kpi .kpi-label { font-size:10px; font-weight:700; opacity:.7; margin-bottom:5px; }
+.kpi .kpi-value { font-family:‘Nunito’,sans-serif; font-weight:900; font-size:22px; line-height:1; }
+.kpi .kpi-unit { font-size:11px; font-weight:700; opacity:.65; margin-top:3px; }
+.kpi.teal   { background:var(–teal-soft);   color:#0a7870; border-color:#a8e8e0; }
+.kpi.blue   { background:var(–blue-soft);   color:#1060a0; border-color:#b0d5f0; }
+.kpi.green  { background:var(–green-soft);  color:#106040; border-color:#a0dcc0; }
+.kpi.orange { background:var(–orange-soft); color:#903010; border-color:#ffc090; }
+.kpi.red    { background:var(–red-soft);    color:#c03030; border-color:#ffb0b0; }
 
 /* ===== COMMENT ===== */
-#commentSection {
-background: linear-gradient(135deg, #e8f8f4, #d4f3e7);
-border-radius: var(–radius);
-padding: 18px 20px;
-margin-bottom: 16px;
-border: 1.5px solid #a8e6cc;
-font-size: 14px;
-line-height: 1.7;
-color: #1e5a40;
+.comment-card {
+background:var(–teal-soft); border:1.5px solid #a8e8e0;
+border-radius:var(–r); padding:16px 18px;
+margin-bottom:12px; font-size:13px; line-height:1.85; color:#0a5048;
 }
 
-/* ===== CANVAS ===== */
-#assetChart {
-width: 100% !important;
-height: auto !important;
-border-radius: var(–radius);
-background: white;
-border: 1.5px solid var(–border);
-margin-bottom: 16px;
-box-shadow: var(–shadow);
+/* ===== CHART ===== */
+.chart-card {
+background:#fff; border-radius:var(–r);
+border:1.5px solid var(–border); box-shadow:var(–shadow);
+padding:18px 14px; margin-bottom:12px;
 }
+.chart-top {
+display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;
+}
+.chart-title { font-family:‘Nunito’,sans-serif; font-weight:800; font-size:15px; }
 
 /* ===== TABLE ===== */
-.table-wrap {
-overflow-x: auto;
-border-radius: var(–radius);
-border: 1.5px solid var(–border);
-background: white;
-box-shadow: var(–shadow);
-margin-bottom: 16px;
+.table-card {
+background:#fff; border-radius:var(–r);
+border:1.5px solid var(–border); box-shadow:var(–shadow);
+overflow:hidden; margin-bottom:12px;
 }
-table {
-width: 100%;
-border-collapse: collapse;
-font-size: 13px;
+.table-card-head {
+padding:14px 16px 10px;
+border-bottom:1.5px solid var(–border);
+display:flex; align-items:center; justify-content:space-between;
 }
+.table-card-head span:first-child {
+font-family:‘Nunito’,sans-serif; font-weight:800; font-size:15px;
+}
+.table-scroll { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:12px; }
 th {
-background: var(–sky);
-color: var(–blue-dark);
-font-weight: 700;
-padding: 10px 8px;
-text-align: right;
-border-bottom: 2px solid var(–sky-mid);
-white-space: nowrap;
+background:#edf5ff; color:#1060a0;
+font-weight:700; padding:9px 8px;
+text-align:right; white-space:nowrap;
+border-bottom:2px solid #cce0f5;
 }
-th:first-child { text-align: center; }
-td {
-padding: 10px 8px;
-text-align: right;
-border-bottom: 1px solid #eef4fb;
-}
-td:first-child { text-align: center; font-weight: 700; color: var(–blue-dark); }
-tr:nth-child(even):not(.detailRow) { background: #f8fcff; }
-tr:hover:not(.detailRow) { background: var(–sky); }
-.clickable { cursor: pointer; color: var(–blue); font-size: 16px; }
-.detailRow { display: none; background: #f0f8ff; }
-.detailRow td {
-text-align: left;
-font-size: 12px;
-line-height: 1.8;
-color: var(–text-light);
-}
+th:first-child, th:nth-child(2) { text-align:center; }
+td { padding:9px 8px; text-align:right; border-bottom:1px solid #eef4fb; }
+td:first-child { text-align:center; font-family:‘Nunito’,sans-serif; font-weight:800; color:var(–blue); }
+td:nth-child(2) { text-align:center; }
+tr:nth-child(even):not(.detailRow) { background:#f8fcff; }
+tr:hover:not(.detailRow) { background:var(–teal-soft); }
+.clickable { cursor:pointer; color:var(–teal); }
+.detailRow { display:none; background:#f0fbf8; }
+.detailRow td { text-align:left; font-size:11px; line-height:1.9; color:var(–text-mid); padding:10px 14px; }
 
-/* ===== NEXT 5 BTN ===== */
-#next5Btn {
-display: block;
-margin: 0 auto 16px;
-background: white;
-border: 2px solid var(–blue);
-color: var(–blue);
-border-radius: 50px;
-padding: 12px 32px;
-font-family: ‘Nunito’, sans-serif;
-font-weight: 800;
-font-size: 15px;
-cursor: pointer;
-transition: background 0.2s, transform 0.1s;
+/* ===== BOTTOM BTNS ===== */
+.btn-row { display:flex; gap:10px; margin-bottom:12px; }
+.btn-outline {
+flex:1; padding:13px 10px; background:#fff;
+border:2px solid var(–teal); color:var(–teal-dark);
+border-radius:50px; font-family:‘Nunito’,sans-serif;
+font-weight:800; font-size:13px; cursor:pointer; text-align:center;
+transition:background .18s;
 }
-#next5Btn:hover { background: var(–sky); }
-#next5Btn:active { transform: scale(0.97); }
-
-/* ===== SAVE BTN ===== */
-#saveBtn {
-display: block;
-margin: 0 auto 16px;
-background: linear-gradient(135deg, var(–green), #2ea87a);
-border: none;
-color: white;
-border-radius: 50px;
-padding: 12px 32px;
-font-family: ‘Nunito’, sans-serif;
-font-weight: 800;
-font-size: 15px;
-cursor: pointer;
-box-shadow: 0 4px 16px rgba(76,186,139,0.3);
-transition: transform 0.1s;
+.btn-outline:hover { background:var(–teal-soft); }
+.btn-green {
+flex:1; padding:13px 10px;
+background:linear-gradient(135deg,#3dba8c,#2ea87a);
+border:none; color:#fff; border-radius:50px;
+font-family:‘Nunito’,sans-serif; font-weight:800; font-size:13px;
+cursor:pointer; box-shadow:0 4px 14px rgba(61,186,140,.28);
 }
-#saveBtn:active { transform: scale(0.97); }
-
-/* ===== SAVED HISTORY ===== */
-.saved-item {
-background: #f8fcff;
-border: 1.5px solid var(–border);
-border-radius: var(–radius-sm);
-padding: 14px;
-margin-bottom: 10px;
-display: flex;
-align-items: center;
-justify-content: space-between;
-gap: 10px;
-}
-.saved-item .saved-info { flex: 1; }
-.saved-item .saved-title {
-font-weight: 700;
-font-size: 14px;
-margin-bottom: 2px;
-}
-.saved-item .saved-meta {
-font-size: 12px;
-color: var(–text-light);
-}
-.saved-item .saved-actions { display: flex; gap: 6px; }
-.saved-item button {
-padding: 6px 12px;
-border-radius: 8px;
-border: none;
-font-size: 12px;
-font-weight: 700;
-cursor: pointer;
-font-family: ‘Noto Sans JP’, sans-serif;
-}
-.load-btn { background: var(–sky); color: var(–blue-dark); }
-.del-btn { background: var(–coral-light); color: var(–coral); }
 
 /* ===== PHILO ===== */
-#philoBtn {
-display: block;
-margin: 0 auto 16px;
-background: linear-gradient(to bottom, #1c2f4a, #12203a);
-color: #f5e6a6;
-border: 2px solid #bfa84c;
-border-radius: 50px;
-padding: 12px 32px;
-font-family: ‘Noto Sans JP’, sans-serif;
-font-weight: 700;
-font-size: 14px;
-cursor: pointer;
-letter-spacing: 1px;
+.philo-btn {
+width:100%; padding:13px;
+background:linear-gradient(to bottom,#1c2f4a,#12203a);
+border:2px solid #bfa84c; color:#f5e6a6;
+border-radius:50px; font-family:‘Noto Sans JP’,sans-serif;
+font-weight:700; font-size:14px; cursor:pointer;
+letter-spacing:1px; margin-bottom:12px;
+}
+.philo-box {
+display:none; background:linear-gradient(135deg,#1c2f4a,#12203a);
+border-radius:var(–r); padding:30px 24px;
+text-align:center; color:#f5e6a6;
+font-size:15px; line-height:2.4;
+border:2px solid #bfa84c; margin-bottom:12px;
 }
 
-#philosophySection {
-display: none;
-background: linear-gradient(135deg, #1c2f4a, #12203a);
-border-radius: var(–radius);
-padding: 28px 24px;
-text-align: center;
-color: #f5e6a6;
-font-family: ‘Noto Sans JP’, sans-serif;
-font-size: 16px;
-line-height: 2.2;
-letter-spacing: 0.5px;
-border: 2px solid #bfa84c;
-margin-bottom: 16px;
+/* ===== SAVED ===== */
+.saved-item {
+background:#f8fcff; border:1.5px solid var(–border);
+border-radius:var(–r-sm); padding:13px; margin-bottom:8px;
+display:flex; align-items:center; justify-content:space-between; gap:10px;
 }
+.saved-info { flex:1; }
+.saved-title { font-weight:700; font-size:13px; margin-bottom:2px; }
+.saved-meta { font-size:11px; color:var(–text-light); }
+.saved-acts { display:flex; gap:6px; }
+.saved-acts button {
+padding:6px 12px; border-radius:8px; border:none;
+font-size:11px; font-weight:700; cursor:pointer;
+font-family:‘Noto Sans JP’,sans-serif;
+}
+.load-btn { background:var(–blue-soft); color:#1060a0; }
+.del-btn  { background:var(–red-soft);  color:var(–red); }
+.empty-saved { text-align:center; color:var(–text-light); font-size:13px; padding:18px 0; }
 
-/* ===== EMPTY SAVED ===== */
-.empty-saved {
-text-align: center;
-color: var(–text-light);
-font-size: 13px;
-padding: 20px 0;
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+width:100%; max-width:480px;
+background:rgba(255,255,255,.94);
+border-top:1.5px solid var(–border);
+backdrop-filter:blur(12px);
+display:none; z-index:100;
+padding-bottom:env(safe-area-inset-bottom,0px);
 }
-
-/* ===== ANIMATIONS ===== */
-@keyframes fadeIn {
-from { opacity: 0; transform: translateY(12px); }
-to { opacity: 1; transform: translateY(0); }
+.bottom-nav.show { display:flex; }
+.nav-item {
+flex:1; display:flex; flex-direction:column; align-items:center;
+padding:10px 0 8px; cursor:pointer;
+font-size:10px; font-weight:700; color:var(–text-light);
+gap:3px; border:none; background:transparent;
+transition:color .18s; font-family:‘Noto Sans JP’,sans-serif;
 }
-.fade-in { animation: fadeIn 0.4s ease forwards; }
+.nav-icon { font-size:20px; }
+.nav-item.active { color:var(–teal-dark); }
 </style>
 
 </head>
 <body>
 
-<!-- HEADER -->
+<!-- ========== PAGE: 入力 ========== -->
 
-<div class="header">
-  <span class="header-emoji">🏃</span>
-  <h1>LIFE Runner</h1>
-  <p class="header-sub">住宅ローン・投資・資産推移をシミュレーション</p>
+<div class="page active" id="page-input">
+
+  <div class="splash">
+    <div class="splash-blob1"></div>
+    <div class="splash-blob2"></div>
+    <div class="logo-row">
+      <div class="logo-icon">🏃</div>
+      <div class="logo-text">
+        <h1>LIFE Runner</h1>
+        <p>人生の資産を最適化<br>安心を見える化する</p>
+      </div>
+    </div>
+    <div class="splash-tag">✨ 3分で診断スタート</div>
+  </div>
+  <div class="wave">
+    <svg viewBox="0 0 480 32" preserveAspectRatio="none" height="32" width="100%">
+      <path d="M0,0 C120,32 360,0 480,22 L480,0 Z" fill="#f2f7fc"/>
+    </svg>
+  </div>
+
+  <div class="wrap">
+
+```
+<!-- 基本情報 -->
+<div class="sec-head">
+  <div class="sec-icon" style="background:var(--purple-soft)">👤</div>
+  <div><h2>基本情報</h2><div class="sec-sub">現在の年齢とローン開始年齢</div></div>
 </div>
-<div class="wave-divider">
-  <svg viewBox="0 0 600 30" preserveAspectRatio="none" height="30" width="100%">
-    <path d="M0,0 C150,30 450,0 600,20 L600,0 Z" fill="#f0f8ff"/>
-  </svg>
-</div>
-
-<div class="main">
-
-  <!-- 基本情報 -->
-
-  <div class="section-label"><div class="dot"></div>基本情報</div>
-  <div class="card">
-    <div class="input-row">
-      <div class="input-group">
-        <label>現在年齢</label>
-        <input type="number" id="startAge" value="35">
-      </div>
-      <div class="input-group">
-        <label>ローン開始年齢</label>
-        <input type="number" id="loanStartAge" value="30">
+<div class="card">
+  <div class="row2">
+    <div class="field">
+      <label>現在の年齢</label>
+      <div class="input-wrap">
+        <input type="number" id="startAge" value="35" inputmode="decimal">
+        <span class="input-unit">歳</span>
       </div>
     </div>
-    <div class="input-row">
-      <div class="input-group">
-        <label>月収（万円）</label>
-        <input type="number" id="income" value="50">
-      </div>
-      <div class="input-group">
-        <label>生活費（万円）</label>
-        <input type="number" id="expenses" value="30">
-      </div>
-    </div>
-    <div class="input-row">
-      <div class="input-group">
-        <label>ボーナス回数</label>
-        <input type="number" id="bonusTimes" value="2">
-      </div>
-      <div class="input-group">
-        <label>ボーナス額（万円）</label>
-        <input type="number" id="bonusAmount" value="50">
-      </div>
-    </div>
-    <div class="input-row">
-      <div class="input-group">
-        <label>現在の貯蓄（万円）</label>
-        <input type="number" id="savings" value="100">
-      </div>
-      <div class="input-group">
-        <label>防衛資金（万円）</label>
-        <input type="number" id="emergencyTarget" value="180">
-      </div>
-    </div>
-    <div class="input-row">
-      <div class="input-group">
-        <label>投資額/月（万円）</label>
-        <input type="number" id="investment" value="5">
-      </div>
-      <div class="input-group">
-        <label>投資利回り（%）</label>
-        <input type="number" id="investmentReturn" value="5">
+    <div class="field">
+      <label>ローン開始年齢</label>
+      <div class="input-wrap">
+        <input type="number" id="loanStartAge" value="30" inputmode="decimal">
+        <span class="input-unit">歳</span>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- 住宅ローン -->
-
-  <div class="section-label"><div class="dot"></div>住宅ローン</div>
-  <div class="card">
-    <div class="toggle-header" onclick="toggleSection('loanContent', this)">
-      <span class="toggle-title">🏠 ローン詳細</span>
-      <span class="toggle-arrow">▼</span>
+<!-- 収入 -->
+<div class="sec-head">
+  <div class="sec-icon" style="background:var(--teal-soft)">💰</div>
+  <div><h2>収入</h2><div class="sec-sub">税引き後の手取り金額を入力</div></div>
+</div>
+<div class="card">
+  <div class="row2" style="margin-bottom:10px">
+    <div class="field">
+      <label>月手取り <span class="sub">税引き後</span></label>
+      <div class="input-wrap">
+        <input type="number" id="income" value="50" inputmode="decimal">
+        <span class="input-unit">万円</span>
+      </div>
     </div>
-    <div class="toggle-body" id="loanContent">
-      <div style="margin-top:14px">
-        <div class="input-row">
-          <div class="input-group">
-            <label>借入額（万円）</label>
-            <input type="number" id="loanAmount" value="3200">
-          </div>
-          <div class="input-group">
-            <label>金利（%）</label>
-            <input type="number" id="interestRate" value="0.95">
-          </div>
-        </div>
-        <div class="input-row">
-          <div class="input-group">
-            <label>計算方式</label>
-            <select id="repaymentType">
-              <option value="equal">元利均等</option>
-              <option value="principal">元金均等</option>
-            </select>
-          </div>
-          <div class="input-group">
-            <label>繰上げ後の再計算</label>
-            <select id="recalcOption">
-              <option value="no">そのまま</option>
-              <option value="reduce">月額減額</option>
-            </select>
-          </div>
-        </div>
-        <div class="input-row">
-          <div class="input-group">
-            <label>返済期間（年）</label>
-            <input type="number" id="loanYears" value="35">
-          </div>
-          <div class="input-group">
-            <label>ボーナス返済（万円/回）</label>
-            <input type="number" id="bonusRepay" value="0">
-          </div>
-        </div>
+    <div class="field">
+      <label>現在の貯蓄</label>
+      <div class="input-wrap">
+        <input type="number" id="savings" value="100" inputmode="decimal">
+        <span class="input-unit">万円</span>
+      </div>
+    </div>
+  </div>
+  <div class="row3">
+    <div class="field">
+      <label>ボーナス回数</label>
+      <div class="input-wrap">
+        <input type="number" id="bonusTimes" value="2" inputmode="decimal">
+        <span class="input-unit">回/年</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>ボーナス手取り <span class="sub">1回あたり</span></label>
+      <div class="input-wrap">
+        <input type="number" id="bonusAmount" value="50" inputmode="decimal">
+        <span class="input-unit">万円</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>防衛資金 <span class="sub">常に残す額</span></label>
+      <div class="input-wrap">
+        <input type="number" id="emergencyTarget" value="180" inputmode="decimal">
+        <span class="input-unit">万円</span>
+      </div>
+    </div>
+  </div>
+</div>
 
-```
+<!-- 支出 -->
+<div class="sec-head">
+  <div class="sec-icon" style="background:var(--orange-soft)">🛒</div>
+  <div><h2>支出</h2><div class="sec-sub">毎月の生活費合計</div></div>
+</div>
+<div class="card">
+  <div class="field">
+    <label>月の生活費合計 <span class="sub">食費・光熱費・通信費など</span></label>
+    <div class="input-wrap">
+      <input type="number" id="expenses" value="30" inputmode="decimal">
+      <span class="input-unit">万円</span>
+    </div>
+  </div>
+  <div class="hint">💡 住居費（家賃など）はローン設定に含めます。ここには食費・光熱費・通信費・保険料など、それ以外の毎月かかる費用を合計して入力してください。</div>
+</div>
+
+<!-- 投資 -->
+<div class="sec-head">
+  <div class="sec-icon" style="background:var(--green-soft)">📈</div>
+  <div><h2>投資</h2><div class="sec-sub">NISAや積立投資など</div></div>
+</div>
+<div class="card">
+  <div class="row2">
+    <div class="field">
+      <label>毎月の投資額</label>
+      <div class="input-wrap">
+        <input type="number" id="investment" value="5" inputmode="decimal">
+        <span class="input-unit">万円</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>想定利回り <span class="sub">年率・オルカンなら5%</span></label>
+      <div class="input-wrap">
+        <input type="number" id="investmentReturn" value="5" inputmode="decimal">
+        <span class="input-unit">%</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 住宅ローン -->
+<div class="sec-head">
+  <div class="sec-icon" style="background:var(--blue-soft)">🏠</div>
+  <div><h2>住宅ローン</h2><div class="sec-sub">ない場合はスキップOK</div></div>
+</div>
+<div class="card">
+  <button class="tog-btn tb-blue" onclick="tog('loanBody',this)">
+    <span class="tl">🏠 ローンを設定する</span>
+    <i class="tog-arr">▼</i>
+  </button>
+  <div class="tog-body" id="loanBody">
+    <div class="row2" style="margin-top:12px;margin-bottom:10px">
+      <div class="field">
+        <label>借入額</label>
+        <div class="input-wrap">
+          <input type="number" id="loanAmount" value="3200" inputmode="decimal">
+          <span class="input-unit">万円</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>金利</label>
+        <div class="input-wrap">
+          <input type="number" id="interestRate" value="0.95" step="0.01" inputmode="decimal">
+          <span class="input-unit">%</span>
+        </div>
+      </div>
+    </div>
+    <div class="row2" style="margin-bottom:10px">
+      <div class="field">
+        <label>計算方式</label>
+        <select id="repaymentType">
+          <option value="equal">元利均等（毎月同額）</option>
+          <option value="principal">元金均等（最初が高め）</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>繰上げ後の扱い</label>
+        <select id="recalcOption">
+          <option value="no">期間短縮</option>
+          <option value="reduce">月額を減らす</option>
+        </select>
+      </div>
+    </div>
+    <div class="row2" style="margin-bottom:10px">
+      <div class="field">
+        <label>返済期間</label>
+        <div class="input-wrap">
+          <input type="number" id="loanYears" value="35" inputmode="decimal">
+          <span class="input-unit">年</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>ボーナス返済 <span class="sub">1回あたり</span></label>
+        <div class="input-wrap">
+          <input type="number" id="bonusRepay" value="0" inputmode="decimal">
+          <span class="input-unit">万円</span>
+        </div>
+      </div>
+    </div>
+
     <!-- 金利変動 -->
-    <div style="margin-top:14px">
-      <div class="toggle-header" onclick="toggleSection('rateSection', this)" style="background:#fff4d4; border-color:#ffe0a0;">
-        <span class="toggle-title" style="color:#8a6000;">📈 金利変動の設定</span>
-        <span class="toggle-arrow" style="color:#b07a00;">▼</span>
-      </div>
-      <div class="toggle-body" id="rateSection">
-        <div id="rateChangesContainer" style="margin-top:12px;"></div>
-        <button class="add-btn" onclick="addRateChange()">＋ 金利変動を追加</button>
-      </div>
+    <button class="tog-btn tb-yellow" onclick="tog('rateBody',this)" style="margin-bottom:0">
+      <span class="tl">📊 途中で金利が変わる予定がある</span>
+      <i class="tog-arr">▼</i>
+    </button>
+    <div class="tog-body" id="rateBody">
+      <div id="rateChangesContainer"></div>
+      <button class="add-btn" onclick="addRateChange()">＋ 金利変動を追加</button>
     </div>
 
     <!-- 繰上げ返済 -->
-    <div style="margin-top:12px">
-      <div class="toggle-header" onclick="toggleSection('prepaySection', this)" style="background:#ede8fb; border-color:#c9bff3;">
-        <span class="toggle-title" style="color:#5a3fb5;">💨 繰上げ返済の設定</span>
-        <span class="toggle-arrow" style="color:#7b5ea7;">▼</span>
-      </div>
-      <div class="toggle-body" id="prepaySection">
-        <div id="prepayListContainer" style="margin-top:12px;"></div>
-        <button class="add-btn" onclick="addPrepay()" style="border-color:#9b7fe8; color:#7b5ea7;">＋ 繰上げ返済を追加</button>
-      </div>
+    <button class="tog-btn tb-green" onclick="tog('prepayBody',this)" style="margin-top:8px;margin-bottom:0">
+      <span class="tl">💨 繰上げ返済の予定がある</span>
+      <i class="tog-arr">▼</i>
+    </button>
+    <div class="tog-body" id="prepayBody">
+      <div id="prepayListContainer"></div>
+      <button class="add-btn" onclick="addPrepay()">＋ 繰上げ返済を追加</button>
     </div>
   </div>
 </div>
-```
 
+<!-- ライフイベント -->
+<div class="sec-head">
+  <div class="sec-icon" style="background:var(--yellow-soft)">🎉</div>
+  <div><h2>ライフイベント</h2><div class="sec-sub">収入・支出が変わる予定を登録</div></div>
+</div>
+<div class="card">
+  <button class="tog-btn tb-orange" onclick="tog('eventBody',this)">
+    <span class="tl">🎉 イベントを追加する</span>
+    <i class="tog-arr">▼</i>
+  </button>
+  <div class="tog-body" id="eventBody">
+    <div class="hint" style="margin-bottom:10px">💡 例：子ども誕生で支出＋5万、転職で収入が45万に変わる、車の購入で300万の一時支出</div>
+    <div id="eventList"></div>
+    <button class="add-btn" onclick="addEvent()" style="border-color:var(--orange);color:#903010">＋ イベントを追加</button>
   </div>
-
-  <!-- ライフイベント -->
-
-  <div class="section-label"><div class="dot"></div>ライフイベント</div>
-  <div class="card">
-    <div class="toggle-header" onclick="toggleSection('eventContent', this)" style="background:#ffe5e0; border-color:#ffbfb0;">
-      <span class="toggle-title" style="color:#c0392b;">🎉 イベントの設定</span>
-      <span class="toggle-arrow" style="color:#c0392b;">▼</span>
-    </div>
-    <div class="toggle-body" id="eventContent">
-      <div id="eventList" style="margin-top:12px;"></div>
-      <button class="add-btn" onclick="addEvent()" style="border-color:var(--coral); color:var(--coral);">＋ イベントを追加</button>
-    </div>
-  </div>
-
-  <p style="text-align:center; color:var(--text-light); font-size:12px; margin-bottom:16px;">
-    ※ 初期設定のままでもシミュレーションできます
-  </p>
-
-  <!-- RUN BUTTON -->
-
-  <div class="run-btn-wrap">
-    <button id="runBtn">🚀 シミュレーション開始</button>
-  </div>
-
-  <!-- RESULT SECTION -->
-
-  <div id="resultSection">
-
-```
-<div class="result-header">
-  <h2>📊 診断結果</h2>
 </div>
 
-<!-- KPIs -->
+<p style="text-align:center;color:var(--text-light);font-size:12px;margin-bottom:4px">
+  ※ 初期設定のままでもシミュレーションできます
+</p>
+```
+
+  </div><!-- /wrap -->
+
+  <div class="start-wrap">
+    <button id="runBtn">診断スタート →</button>
+    <p class="run-note">※ 入力内容はブラウザに保存されません</p>
+  </div>
+
+</div><!-- /page-input -->
+
+<!-- ========== PAGE: 結果 ========== -->
+
+<div class="page" id="page-result">
+
+  <div class="result-splash">
+    <button class="back-btn" onclick="goBack()">← 入力に戻る</button>
+    <h2>📊 診断結果</h2>
+    <p id="result-sub"></p>
+  </div>
+  <div class="wave" style="background:linear-gradient(135deg,#0ea898,#3b9edd,#7c6cf0)">
+    <svg viewBox="0 0 480 32" preserveAspectRatio="none" height="32" width="100%">
+      <path d="M0,0 C120,32 360,0 480,22 L480,0 Z" fill="#f2f7fc"/>
+    </svg>
+  </div>
+
+  <div class="wrap" style="padding-top:4px">
+
+```
+<!-- Today Asset -->
+<div class="today-card" id="todayCard"></div>
+
+<!-- KPI -->
 <div class="kpi-grid" id="kpiGrid"></div>
 
 <!-- Comment -->
-<div id="commentSection"></div>
+<div class="comment-card" id="commentSection"></div>
 
 <!-- Chart -->
-<canvas id="assetChart"></canvas>
+<div class="chart-card">
+  <div class="chart-top">
+    <div class="chart-title">📈 資産推移グラフ</div>
+  </div>
+  <canvas id="assetChart" height="220"></canvas>
+</div>
 
 <!-- Table -->
-<div class="table-wrap" id="tableContainer"></div>
+<div class="table-card">
+  <div class="table-card-head">
+    <span>📋 年別詳細</span>
+    <span id="tableRange" style="font-size:11px;color:var(--text-light);font-weight:500"></span>
+  </div>
+  <div class="table-scroll" id="tableContainer"></div>
+</div>
 
 <!-- Buttons -->
-<button id="next5Btn">📅 次の5年を表示</button>
-<button id="saveBtn">💾 この結果を保存</button>
-<button id="philoBtn">✨ 心構え</button>
-<div id="philosophySection">
+<div class="btn-row">
+  <button class="btn-outline" id="next5Btn">📅 次の5年</button>
+  <button class="btn-green" id="saveBtn">💾 保存する</button>
+</div>
+
+<!-- Philo -->
+<button class="philo-btn" id="philoBtn">✨ 心構え</button>
+<div class="philo-box" id="philosophySection">
   揺れたら立ち止まればいい。<br>
   弱ったらここに帰ってこい。<br>
   整えたらまた進めばいい。<br>
@@ -748,554 +752,547 @@ to { opacity: 1; transform: translateY(0); }
 </div>
 
 <!-- Saved -->
-<div class="section-label"><div class="dot"></div>保存済みシミュレーション</div>
-<div class="card" id="savedHistory">
-  <div id="savedList"></div>
+<div class="sec-head" style="margin-top:8px">
+  <div class="sec-icon" style="background:var(--blue-soft)">📁</div>
+  <div><h2>保存済みシミュレーション</h2></div>
 </div>
+<div class="card"><div id="savedList"></div></div>
 ```
 
-  </div><!-- /resultSection -->
+  </div>
+</div><!-- /page-result -->
 
-</div><!-- /main -->
+<!-- Bottom Nav -->
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="bottom-nav" id="bottomNav">
+  <button class="nav-item active" onclick="goBack()">
+    <span class="nav-icon">🏠</span>ホーム
+  </button>
+  <button class="nav-item" onclick="document.getElementById('tableContainer').scrollIntoView({behavior:'smooth'})">
+    <span class="nav-icon">📋</span>詳細
+  </button>
+  <button class="nav-item" onclick="saveSim()">
+    <span class="nav-icon">💾</span>保存
+  </button>
+</div>
 
 <script>
-
-const runBtn = document.getElementById("runBtn")
-const tableContainer = document.getElementById("tableContainer")
-const commentSection = document.getElementById("commentSection")
-const next5Btn = document.getElementById("next5Btn")
-const philoBtn = document.getElementById("philoBtn")
-const philosophySection = document.getElementById("philosophySection")
-const resultSection = document.getElementById("resultSection")
 let assetChart = null
 let maxYearDisplay = 10
+let simHistory = []
 
-function toggleSection(id, header) {
+// ===== TOGGLE =====
+function tog(id, btn) {
   const body = document.getElementById(id)
-  const arrow = header.querySelector('.toggle-arrow')
-  const isOpen = body.classList.contains('open')
-  body.classList.toggle('open', !isOpen)
-  if (arrow) arrow.classList.toggle('open', !isOpen)
+  const arr  = btn.querySelector('.tog-arr')
+  const open = body.classList.contains('open')
+  body.classList.toggle('open', !open)
+  if (arr) arr.classList.toggle('open', !open)
 }
 
-function toggleLoan() { toggleSection('loanContent', document.querySelector('[onclick*="loanContent"]')) }
-function toggleEvent() { toggleSection('eventContent', document.querySelector('[onclick*="eventContent"]')) }
-
-function renderSavedHistory() {
-  let history = JSON.parse(localStorage.getItem("lifeRunnerSaved")) || []
-  let html = ""
-  if (history.length === 0) {
-    html = '<div class="empty-saved">📭 保存されたシミュレーションはありません</div>'
-  }
-  history.forEach((h, i) => {
-    html += `
-      <div class="saved-item">
-        <div class="saved-info">
-          <div class="saved-title">${h.title}</div>
-          <div class="saved-meta">${h.age}歳時点 ｜ 純資産 ${h.net >= 0 ? "+" : ""}${h.net}万円</div>
-        </div>
-        <div class="saved-actions">
-          <button class="load-btn" onclick="loadHistory(${i})">読込</button>
-          <button class="del-btn" onclick="deleteHistory(${i})">削除</button>
-        </div>
-      </div>`
-  })
-  document.getElementById("savedList").innerHTML = html
+// ===== PAGE =====
+function goResult() {
+  document.getElementById('page-input').classList.remove('active')
+  document.getElementById('page-result').classList.add('active')
+  document.getElementById('bottomNav').classList.add('show')
+  window.scrollTo(0, 0)
+}
+function goBack() {
+  document.getElementById('page-result').classList.remove('active')
+  document.getElementById('page-input').classList.add('active')
+  document.getElementById('bottomNav').classList.remove('show')
+  window.scrollTo(0, 0)
 }
 
-function loadHistory(i) {
-  let history = JSON.parse(localStorage.getItem("lifeRunnerSaved")) || []
-  let h = history[i]
-  if (!h) return
-
-  // ===== 基本入力復元 =====
-  Object.keys(h.inputs).forEach(k => {
-    let el = document.getElementById(k)
-    if (el) el.value = h.inputs[k]
-  })
-
-  // ===== イベント復元 =====
-  const eventContainer = document.getElementById("eventList")
-  eventContainer.innerHTML = ""
-  h.events?.forEach(ev => {
-    addEvent()
-    let last = eventContainer.lastElementChild
-    last.querySelector(".age").value = ev.age
-    last.querySelector(".type").value = ev.type
-    last.querySelector(".amount").value = ev.amount
-    last.querySelector(".note").value = ev.note
-  })
-
-  // ===== 金利変動復元 =====
-  const rateContainer = document.getElementById("rateChangesContainer")
-  rateContainer.innerHTML = ""
-  h.rates?.forEach(r => {
-    addRateChange()
-    let last = rateContainer.lastElementChild
-    last.querySelector(".rateAge").value = r.age
-    last.querySelector(".rateValue").value = r.rate
-  })
-
-  // ===== 繰上げ返済復元 =====
-  const prepayContainer = document.getElementById("prepayListContainer")
-  prepayContainer.innerHTML = ""
-  h.prepays?.forEach(p => {
-    addPrepay()
-    let last = prepayContainer.lastElementChild
-    last.querySelector(".prepayAge").value = p.age
-    last.querySelector(".prepayAmount").value = p.amount
-  })
-
-  // 👇これ追加
-  calculateAndRender()
-}
-
-function deleteHistory(i) {
-  let history = JSON.parse(localStorage.getItem("lifeRunnerSaved")) || []
-  history.splice(i, 1)
-  localStorage.setItem("lifeRunnerSaved", JSON.stringify(history))
-  renderSavedHistory()
-}
-
-philoBtn.addEventListener("click", () => {
-  philosophySection.style.display = philosophySection.style.display === "none" ? "block" : "none"
-})
-
-runBtn.addEventListener("click", () => {
-  maxYearDisplay = 10
-  calculateAndRender()
-})
-
-document.getElementById("saveBtn").addEventListener("click", () => {
-  if (!window.latestResult) {
-    alert("先にシミュレーションしてください")
-    return
-  }
-
-  let title = prompt("タイトルを入力（任意）")
-  if (!title || title.trim() === "") {
-    title = "無題（" + new Date().toLocaleDateString() + "）"
-  }
-
-  // ===== 追加：イベント取得 =====
-  let events = []
-  document.querySelectorAll(".event").forEach(e => {
-    events.push({
-      age: e.querySelector(".age").value,
-      type: e.querySelector(".type").value,
-      amount: e.querySelector(".amount").value,
-      note: e.querySelector(".note").value
-    })
-  })
-
-  // ===== 追加：金利変動 =====
-  let rates = []
-  document.querySelectorAll(".rateChangeRow").forEach(r => {
-    rates.push({
-      age: r.querySelector(".rateAge").value,
-      rate: r.querySelector(".rateValue").value
-    })
-  })
-
-  // ===== 追加：繰上げ返済 =====
-  let prepays = []
-  document.querySelectorAll(".prepayRow").forEach(p => {
-    prepays.push({
-      age: p.querySelector(".prepayAge").value,
-      amount: p.querySelector(".prepayAmount").value
-    })
-  })
-
-  let history = JSON.parse(localStorage.getItem("lifeRunnerSaved")) || []
-
-  history.unshift({
-    title,
-    net: window.latestResult.net,
-    age: window.latestResult.age,
-
-    inputs: {
-      startAge: document.getElementById("startAge").value,
-      loanStartAge: document.getElementById("loanStartAge").value,
-      income: document.getElementById("income").value,
-      bonusTimes: document.getElementById("bonusTimes").value,
-      bonusAmount: document.getElementById("bonusAmount").value,
-      savings: document.getElementById("savings").value,
-      expenses: document.getElementById("expenses").value,
-      investment: document.getElementById("investment").value,
-      investmentReturn: document.getElementById("investmentReturn").value,
-      emergencyTarget: document.getElementById("emergencyTarget").value,
-      loanAmount: document.getElementById("loanAmount").value,
-      interestRate: document.getElementById("interestRate").value,
-      loanYears: document.getElementById("loanYears").value
-    },
-
-    // 👇 ここが今回の本体
-    events,
-    rates,
-    prepays
-  })
-
-  localStorage.setItem("lifeRunnerSaved", JSON.stringify(history))
-  renderSavedHistory()
-})
-
-next5Btn.addEventListener("click", () => {
-  maxYearDisplay += 5
-  calculateAndRender()
-})
-
+// ===== DYNAMIC ROWS =====
 function addRateChange() {
-  let container = document.getElementById("rateChangesContainer")
-  let div = document.createElement("div")
-  div.className = "row-item rateChangeRow"
-  div.innerHTML = `
-    <button class="delete-btn" onclick="this.parentElement.remove()">削除</button>
-    <div class="input-row" style="padding-right:60px">
-      <div class="input-group"><label>何歳から</label><input type="number" class="rateAge" placeholder="例：40"></div>
-      <div class="input-group"><label>金利（%）</label><input type="number" class="rateValue" value="1.2" step="0.01"></div>
+  const c = document.getElementById('rateChangesContainer')
+  const d = document.createElement('div')
+  d.className = 'drow rateChangeRow'
+  d.innerHTML = `
+    <button class="del" onclick="this.parentElement.remove()">削除</button>
+    <div class="row2" style="padding-right:50px">
+      <div class="field"><label>何歳から</label>
+        <div class="input-wrap"><input type="number" class="rateAge" placeholder="40" inputmode="decimal"><span class="input-unit">歳</span></div></div>
+      <div class="field"><label>金利</label>
+        <div class="input-wrap"><input type="number" class="rateValue" value="1.2" step="0.01" inputmode="decimal"><span class="input-unit">%</span></div></div>
     </div>`
-  container.appendChild(div)
+  c.appendChild(d)
 }
 
 function addPrepay() {
-  let container = document.getElementById("prepayListContainer")
-  let div = document.createElement("div")
-  div.className = "row-item prepayRow"
-  div.innerHTML = `
-    <button class="delete-btn" onclick="this.parentElement.remove()">削除</button>
-    <div class="input-row" style="padding-right:60px">
-      <div class="input-group"><label>何歳のとき</label><input type="number" class="prepayAge" value="35"></div>
-      <div class="input-group"><label>金額（万円）</label><input type="number" class="prepayAmount" value="100"></div>
+  const c = document.getElementById('prepayListContainer')
+  const d = document.createElement('div')
+  d.className = 'drow prepayRow'
+  d.innerHTML = `
+    <button class="del" onclick="this.parentElement.remove()">削除</button>
+    <div class="row2" style="padding-right:50px">
+      <div class="field"><label>何歳のとき</label>
+        <div class="input-wrap"><input type="number" class="prepayAge" value="40" inputmode="decimal"><span class="input-unit">歳</span></div></div>
+      <div class="field"><label>返済額</label>
+        <div class="input-wrap"><input type="number" class="prepayAmount" value="100" inputmode="decimal"><span class="input-unit">万円</span></div></div>
     </div>`
-  container.appendChild(div)
+  c.appendChild(d)
 }
 
 function addEvent() {
-  let container = document.getElementById("eventList")
-  let div = document.createElement("div")
-  div.className = "row-item event"
-  div.innerHTML = `
-    <button class="delete-btn" onclick="this.parentElement.remove()">削除</button>
-    <div class="input-row" style="padding-right:60px; margin-bottom:8px">
-      <div class="input-group"><label>年齢</label><input type="number" class="age" value="40"></div>
-      <div class="input-group">
-        <label>種類</label>
+  const c = document.getElementById('eventList')
+  const d = document.createElement('div')
+  d.className = 'drow event'
+  d.innerHTML = `
+    <button class="del" onclick="this.parentElement.remove()">削除</button>
+    <div class="row2" style="padding-right:50px;margin-bottom:8px">
+      <div class="field"><label>年齢</label>
+        <div class="input-wrap"><input type="number" class="age" value="40" inputmode="decimal"><span class="input-unit">歳</span></div></div>
+      <div class="field"><label>種類</label>
         <select class="type">
-          <option value="oneExpense">臨時支出</option>
-          <option value="oneIncome">臨時収入</option>
-          <option value="incomeAdd">収入増加（累積）</option>
-          <option value="incomeSet">収入変更（固定）</option>
-          <option value="expenseAdd">支出増加（累積）</option>
-          <option value="expenseSet">支出変更（固定）</option>
-        </select>
-      </div>
+          <option value="oneExpense">臨時支出（車・旅行など）</option>
+          <option value="oneIncome">臨時収入（相続など）</option>
+          <option value="incomeAdd">収入が増える（昇給・副業）</option>
+          <option value="incomeSet">収入が変わる（転職）</option>
+          <option value="expenseAdd">支出が増える（子ども誕生など）</option>
+          <option value="expenseSet">支出が変わる</option>
+        </select></div>
     </div>
-    <div class="input-row">
-      <div class="input-group"><label>金額（万円）</label><input type="number" class="amount" value="100"></div>
-      <div class="input-group"><label>メモ</label><input type="text" class="note" placeholder="例：子ども大学入学"></div>
+    <div class="row2">
+      <div class="field"><label>金額</label>
+        <div class="input-wrap"><input type="number" class="amount" value="100" inputmode="decimal"><span class="input-unit">万円</span></div></div>
+      <div class="field"><label>メモ（任意）</label>
+        <input type="text" class="note" placeholder="例：子ども大学入学"></div>
     </div>`
-  container.appendChild(div)
+  c.appendChild(d)
 }
 
 function toggleDetail(id) {
-  let row = document.getElementById(id)
-  row.style.display = row.style.display === "none" ? "table-row" : "none"
+  const r = document.getElementById(id)
+  r.style.display = r.style.display === 'none' ? 'table-row' : 'none'
 }
 
+// ===== CALC =====
 function calculateMonthly(loan, rate, months, type) {
   if (rate === 0) return loan / months
-  if (type === "equal") return loan * rate / (1 - Math.pow(1 + rate, -months))
-  else return loan / months + loan * rate
+  if (type === 'equal') return loan * rate / (1 - Math.pow(1 + rate, -months))
+  return loan / months + loan * rate
 }
 
+function n(id) { return Number(document.getElementById(id).value) }
+
+document.getElementById('runBtn').addEventListener('click', () => {
+  maxYearDisplay = 10
+  calculateAndRender()
+  goResult()
+})
+
+document.getElementById('next5Btn').addEventListener('click', () => {
+  maxYearDisplay += 5
+  renderTable()
+  renderChart()
+})
+
+document.getElementById('saveBtn').addEventListener('click', saveSim)
+document.getElementById('philoBtn').addEventListener('click', () => {
+  const b = document.getElementById('philosophySection')
+  b.style.display = b.style.display === 'none' ? 'block' : 'none'
+})
+
 function calculateAndRender() {
-  let startAge = Number(document.getElementById("startAge").value)
-  let loanStartAge = Number(document.getElementById("loanStartAge").value)
-  let income = Number(document.getElementById("income").value)
-  let bonusTimes = Number(document.getElementById("bonusTimes").value)
-  let bonusAmount = Number(document.getElementById("bonusAmount").value)
-  let savings = Number(document.getElementById("savings").value)
-  let expenses = Number(document.getElementById("expenses").value)
-  let investmentSetting = Number(document.getElementById("investment").value)
-  let investmentReturn = Number(document.getElementById("investmentReturn").value) / 100
-  let emergencyTarget = Number(document.getElementById("emergencyTarget").value)
-  let loanAmount = Number(document.getElementById("loanAmount").value)
-  let interestRate = Number(document.getElementById("interestRate").value) / 100
-  let loanYears = Number(document.getElementById("loanYears").value)
-  let repaymentType = document.getElementById("repaymentType").value
-　let recalcOption = document.getElementById("recalcOption").value
-  let events = []
-  document.querySelectorAll(".event").forEach(e => {
+  const startAge       = n('startAge')
+  const loanStartAge   = n('loanStartAge')
+  const income         = n('income')
+  const bonusTimes     = n('bonusTimes')
+  const bonusAmount    = n('bonusAmount')
+  const savings        = n('savings')
+  const expenses       = n('expenses')
+  const investSetting  = n('investment')
+  const investReturn   = n('investmentReturn') / 100
+  const emergencyTarget= n('emergencyTarget')
+  const loanAmount     = n('loanAmount')
+  const interestRate   = n('interestRate') / 100
+  const loanYears      = n('loanYears')
+  const repaymentType  = document.getElementById('repaymentType').value
+  const recalcOption   = document.getElementById('recalcOption').value
+
+  const events = []
+  document.querySelectorAll('.event').forEach(e => {
     events.push({
-      age: Number(e.querySelector(".age").value),
-      type: e.querySelector(".type").value,
-      amount: Number(e.querySelector(".amount").value),
-      note: e.querySelector(".note").value
+      age:    Number(e.querySelector('.age').value),
+      type:   e.querySelector('.type').value,
+      amount: Number(e.querySelector('.amount').value),
+      note:   e.querySelector('.note').value
     })
   })
 
-  let bonusMonths = []
+  const bonusMonths = []
   if (bonusTimes > 0) {
-    let interval = Math.floor(12 / bonusTimes)
+    const interval = Math.floor(12 / bonusTimes)
     for (let i = 1; i <= bonusTimes; i++) bonusMonths.push(i * interval)
   }
 
-  let interestChanges = []
-  document.querySelectorAll(".rateChangeRow").forEach(row => {
+  const interestChanges = []
+  document.querySelectorAll('.rateChangeRow').forEach(r => {
     interestChanges.push({
-      age: Number(row.querySelector(".rateAge").value),
-      rate: Number(row.querySelector(".rateValue").value) / 100
+      age:  Number(r.querySelector('.rateAge').value),
+      rate: Number(r.querySelector('.rateValue').value) / 100
     })
   })
 
-  let prepayList = []
-  document.querySelectorAll(".prepayRow").forEach(row => {
+  const prepayList = []
+  document.querySelectorAll('.prepayRow').forEach(r => {
     prepayList.push({
-      age: Number(row.querySelector(".prepayAge").value),
-      amount: Number(row.querySelector(".prepayAmount").value)
+      age:    Number(r.querySelector('.prepayAge').value),
+      amount: Number(r.querySelector('.prepayAmount').value)
     })
   })
 
-  let cash = savings
-  let invested = 0
-  let investedPrincipal = 0
-  let remainingLoan = loanAmount
-  let currentAnnualRate = interestRate
-  let pastYears = Math.max(0, startAge - loanStartAge)
+  let cash = savings, invested = 0, investedPrincipal = 0
+  let remainingLoan = loanAmount, currentAnnualRate = interestRate
+  const pastYears = Math.max(0, startAge - loanStartAge)
 
+  // fast-forward
   for (let year = 1; year <= pastYears; year++) {
-    let currentAge = startAge + (year - pastYears - 1)
-    let change = interestChanges.find(c => c.age === currentAge)
-    if (change) currentAnnualRate = change.rate
-    let monthlyRate = currentAnnualRate / 12
-    let remainingMonths = (loanYears - year + 1) * 12
-    let monthlyPayment = calculateMonthly(remainingLoan, monthlyRate, remainingMonths, repaymentType)
-    for (let month = 1; month <= 12; month++) {
-      let interest = remainingLoan * monthlyRate
-      let principal = monthlyPayment - interest
-      principal = Math.min(principal, remainingLoan)
+    const age = loanStartAge + year - 1
+    const ch = interestChanges.find(c => c.age === age)
+    if (ch) currentAnnualRate = ch.rate
+    const mr = currentAnnualRate / 12
+    const rm = (loanYears - year + 1) * 12
+    const mp = calculateMonthly(remainingLoan, mr, rm, repaymentType)
+    for (let m = 1; m <= 12; m++) {
+      const interest  = remainingLoan * mr
+      const principal = Math.min(mp - interest, remainingLoan)
       remainingLoan -= principal
     }
   }
 
-  let history = []
-  let currentIncome = income
-  let currentExpenses = expenses
-
+  simHistory = []
+  let currentIncome = income, currentExpenses = expenses
   let monthlyPayment = 0
 
-for (let year = pastYears + 1; year <= loanYears; year++) {
-  let currentAge = startAge + (year - pastYears - 1)
+  for (let year = pastYears + 1; year <= loanYears; year++) {
+    const currentAge = startAge + (year - pastYears - 1)
+    const appliedEvents = []
 
-  let rateChanged = false
-  let change = interestChanges.find(c => c.age === currentAge)
-  if (change) {
-    currentAnnualRate = change.rate
-    rateChanged = true
-  }
+    events.forEach(ev => {
+      if (ev.age !== currentAge) return
+      const note = ev.note ? `（${ev.note}）` : ''
+      if (ev.type === 'incomeAdd')  { currentIncome    += ev.amount; appliedEvents.push(`収入＋${ev.amount}万${note}`) }
+      if (ev.type === 'incomeSet')  { currentIncome     = ev.amount; appliedEvents.push(`収入→${ev.amount}万${note}`) }
+      if (ev.type === 'expenseAdd') { currentExpenses  += ev.amount; appliedEvents.push(`支出＋${ev.amount}万${note}`) }
+      if (ev.type === 'expenseSet') { currentExpenses   = ev.amount; appliedEvents.push(`支出→${ev.amount}万${note}`) }
+      if (ev.type === 'oneIncome')  { cash              += ev.amount; appliedEvents.push(`臨時収入＋${ev.amount}万${note}`) }
+      if (ev.type === 'oneExpense') { cash              -= ev.amount; appliedEvents.push(`臨時支出−${ev.amount}万${note}`) }
+    })
 
-  let monthlyRate = currentAnnualRate / 12
-  let remainingMonths = (loanYears - year + 1) * 12
+    let rateChanged = false
+    const ch = interestChanges.find(c => c.age === currentAge)
+    if (ch) { currentAnnualRate = ch.rate; rateChanged = true }
 
-  if (year === pastYears + 1 || rateChanged) {
-    monthlyPayment = calculateMonthly(
-      remainingLoan,
-      monthlyRate,
-      remainingMonths,
-      repaymentType
-    )
-  }
+    const monthlyRate = currentAnnualRate / 12
+    const remainingMonths = (loanYears - year + 1) * 12
 
-  let yearlyPrincipal = 0
-  let yearlyInterest = 0
+    if (year === pastYears + 1 || rateChanged) {
+      monthlyPayment = calculateMonthly(remainingLoan, monthlyRate, remainingMonths, repaymentType)
+    }
 
-  for (let month = 1; month <= 12; month++) {
+    let yearlyPrincipal = 0, yearlyInterest = 0
 
-    cash += currentIncome
+    for (let month = 1; month <= 12; month++) {
+      cash += currentIncome
 
-    if (bonusMonths.includes(month)) {
-      cash += bonusAmount
-
-      let repay = Number(document.getElementById("bonusRepay").value)
-      let available = cash - emergencyTarget
-
-      if (repay > 0 && available > 0) {
-        let pay = Math.min(repay, remainingLoan, available)
-        remainingLoan -= pay
-        cash -= pay
-
-        if (recalcOption === "reduce") {
-          let newRemainingMonths =
-            (loanYears - year) * 12 + (12 - month)
-
-          monthlyPayment = calculateMonthly(
-            remainingLoan,
-            monthlyRate,
-            newRemainingMonths,
-            repaymentType
-          )
+      if (bonusMonths.includes(month)) {
+        cash += bonusAmount
+        const bonusRepay = n('bonusRepay')
+        if (bonusRepay > 0) {
+          const avail = cash - emergencyTarget
+          if (avail > 0) {
+            const pay = Math.min(bonusRepay, remainingLoan, avail)
+            remainingLoan -= pay; cash -= pay
+            if (recalcOption === 'reduce') {
+              const newRm = (loanYears - year) * 12 + (12 - month)
+              monthlyPayment = calculateMonthly(remainingLoan, monthlyRate, newRm, repaymentType)
+            }
+          }
         }
       }
-    }
 
-    cash -= currentExpenses
+      cash -= currentExpenses
+      const interest  = remainingLoan * monthlyRate
+      const principal = Math.min(monthlyPayment - interest, remainingLoan)
+      remainingLoan -= principal
+      yearlyPrincipal += principal; yearlyInterest += interest
+      cash -= monthlyPayment
 
-    let interest = remainingLoan * monthlyRate
-    let principal = monthlyPayment - interest
-    principal = Math.min(principal, remainingLoan)
-
-    remainingLoan -= principal
-    yearlyPrincipal += principal
-    yearlyInterest += interest
-
-    cash -= monthlyPayment
-
-    let available = cash - emergencyTarget
-    if (available > 0) {
-      let investAmount = Math.min(investmentSetting, available)
-      cash -= investAmount
-      invested += investAmount
-      investedPrincipal += investAmount
-    }
-
-    invested *= (1 + investmentReturn / 12)
-  }
-
-  prepayList.forEach(p => {
-    if (currentAge === p.age) {
-      let available = cash - emergencyTarget
-      let repay = Math.min(p.amount, remainingLoan, available)
-
-      remainingLoan -= repay
-      cash -= repay
-
-      if (recalcOption === "reduce") {
-        let newRemainingMonths = (loanYears - year) * 12
-
-        monthlyPayment = calculateMonthly(
-          remainingLoan,
-          monthlyRate,
-          newRemainingMonths,
-          repaymentType
-        )
+      const avail = cash - emergencyTarget
+      if (avail > 0) {
+        const inv = Math.min(investSetting, avail)
+        cash -= inv; invested += inv; investedPrincipal += inv
       }
+      invested *= (1 + investReturn / 12)
     }
-  })
 
-    history.push({
+    prepayList.forEach(p => {
+      if (p.age !== currentAge) return
+      const avail = cash - emergencyTarget
+      const repay = Math.min(p.amount, remainingLoan, avail)
+      remainingLoan -= repay; cash -= repay
+      if (recalcOption === 'reduce') {
+        const newRm = (loanYears - year) * 12
+        monthlyPayment = calculateMonthly(remainingLoan, monthlyRate, newRm, repaymentType)
+      }
+    })
+
+    const totalAsset = cash + invested
+    const prev = simHistory.length > 0 ? simHistory[simHistory.length - 1].totalAsset : null
+
+    simHistory.push({
       age: currentAge, cash, invested, investedPrincipal,
-      remainingLoan, annualRate: currentAnnualRate, totalAsset, diff,
+      remainingLoan, annualRate: currentAnnualRate, totalAsset,
+      diff: prev !== null ? totalAsset - prev : null,
       yearlyPrincipal, yearlyInterest, events: appliedEvents
     })
   }
 
-  // ===== KPI =====
-  let plusYear = history.find(h => Math.round(h.cash + h.invested - h.remainingLoan) >= 0)
-  let bottom = history.reduce((min, h) => h.totalAsset < min.totalAsset ? h : min)
-  let collapse = history.find(h => h.cash < 0)
-  let annualExpense = expenses * 12
-  let fireTarget = Math.round(annualExpense / 0.04)
-  let lastH = history[history.length - 1]
-  let finalNet = Math.round(lastH.cash + lastH.invested - lastH.remainingLoan)
+  renderTodayCard()
+  renderKPI()
+  renderComment()
+  renderTable()
+  renderChart()
+  renderSavedHistory()
+}
 
-  document.getElementById("kpiGrid").innerHTML = `
-    <div class="kpi-card kpi-blue">
-      <div class="kpi-label">純資産プラスまで</div>
-      <div class="kpi-value">${plusYear ? (plusYear.age - startAge) : "未達"}</div>
-      <div class="kpi-unit">${plusYear ? "年" : ""}</div>
-    </div>
-    <div class="kpi-card kpi-yellow">
-      <div class="kpi-label">資産ボトム年齢</div>
-      <div class="kpi-value">${bottom.age}</div>
-      <div class="kpi-unit">歳</div>
-    </div>
-    <div class="kpi-card ${finalNet >= 0 ? 'kpi-green' : 'kpi-coral'}">
-      <div class="kpi-label">ローン完済時の純資産</div>
-      <div class="kpi-value">${(finalNet >= 0 ? "+" : "") + finalNet}</div>
-      <div class="kpi-unit">万円</div>
-    </div>
-    <div class="kpi-card kpi-blue">
-      <div class="kpi-label">FIRE目標額</div>
-      <div class="kpi-value">${fireTarget}</div>
-      <div class="kpi-unit">万円</div>
+function renderTodayCard() {
+  const startAge = n('startAge')
+  const h0 = simHistory[0]
+  const net = Math.round(h0.cash + h0.invested - h0.remainingLoan)
+  document.getElementById('todayCard').innerHTML = `
+    <div class="today-label">📍 今日の人生資産（${startAge}歳時点）</div>
+    <div class="today-value">${net >= 0 ? '+' : ''}${net.toLocaleString()} 万円</div>
+    <div class="today-sub">
+      <span>純資産（現金＋投資−ローン残債）</span>
+      <span class="today-chip">${startAge}歳</span>
     </div>`
+  document.getElementById('result-sub').textContent =
+    `${startAge}歳からのシミュレーション（${simHistory.length}年間）`
+}
 
-  window.latestResult = { net: finalNet, age: lastH.age }
+function renderKPI() {
+  const startAge   = n('startAge')
+  const expenses   = n('expenses')
+  const plusYear   = simHistory.find(h => Math.round(h.cash + h.invested - h.remainingLoan) >= 0)
+  const bottom     = simHistory.reduce((m, h) => h.totalAsset < m.totalAsset ? h : m)
+  const last       = simHistory[simHistory.length - 1]
+  const finalNet   = Math.round(last.cash + last.invested - last.remainingLoan)
+  const fireTarget = Math.round(expenses * 12 / 0.04)
 
-  // ===== COMMENT =====
-  let text = ""
-  if (collapse) text += `⚠️ <b>${collapse.age}歳</b>で現金がマイナスになる可能性があります。支出や投資額を見直してみましょう。<br>`
+  window.latestResult = { net: finalNet, age: last.age }
+
+  document.getElementById('kpiGrid').innerHTML = `
+    <div class="kpi teal">
+      <span class="kpi-icon">🏠</span>
+      <div class="kpi-label">ローン完済</div>
+      <div class="kpi-value">${last.age}歳</div>
+      <div class="kpi-unit">あと${simHistory.length}年</div>
+    </div>
+    <div class="kpi ${plusYear ? 'green' : 'red'}">
+      <span class="kpi-icon">📈</span>
+      <div class="kpi-label">純資産プラスに転換</div>
+      <div class="kpi-value">${plusYear ? plusYear.age + '歳' : '未達成'}</div>
+      <div class="kpi-unit">${plusYear ? 'あと' + (plusYear.age - startAge) + '年' : ''}</div>
+    </div>
+    <div class="kpi orange">
+      <span class="kpi-icon">📉</span>
+      <div class="kpi-label">資産ボトム</div>
+      <div class="kpi-value">${bottom.age}歳</div>
+      <div class="kpi-unit">${Math.round(bottom.totalAsset).toLocaleString()}万円</div>
+    </div>
+    <div class="kpi ${finalNet >= 0 ? 'blue' : 'red'}">
+      <span class="kpi-icon">🎯</span>
+      <div class="kpi-label">完済時の純資産</div>
+      <div class="kpi-value">${(finalNet >= 0 ? '+' : '') + finalNet.toLocaleString()}万</div>
+      <div class="kpi-unit">FIRE目標 ${fireTarget.toLocaleString()}万円</div>
+    </div>`
+}
+
+function renderComment() {
+  const startAge   = n('startAge')
+  const expenses   = n('expenses')
+  const plusYear   = simHistory.find(h => Math.round(h.cash + h.invested - h.remainingLoan) >= 0)
+  const collapse   = simHistory.find(h => h.cash < 0)
+  const fireTarget = Math.round(expenses * 12 / 0.04)
+  let text = ''
+  if (collapse) text += `⚠️ <b>${collapse.age}歳</b>で現金がマイナスになる可能性があります。支出や投資額を見直しましょう。<br>`
   else text += `✅ シミュレーション期間中、現金はプラスを維持できそうです！<br>`
   if (plusYear) text += `📈 <b>${plusYear.age}歳</b>（${plusYear.age - startAge}年後）に純資産がプラスに転換します。<br>`
-  text += `🎯 FIRE達成には <b>${fireTarget}万円</b> の資産が目標です。`
-  commentSection.innerHTML = text
+  text += `🎯 FIRE達成には <b>${fireTarget.toLocaleString()}万円</b> の資産が目標です。`
+  document.getElementById('commentSection').innerHTML = text
+}
 
-  // ===== TABLE =====
-  let tableHTML = '<table><tr><th>年齢</th><th>詳細</th><th>現金</th><th>投資</th><th>残債</th><th>金利%</th><th>純資産</th><th>前年比</th></tr>'
-  for (let i = 0; i < Math.min(maxYearDisplay, history.length); i++) {
-    let h = history[i]
-    let netAsset = Math.round(h.cash + h.invested - h.remainingLoan)
-    let diffStr = h.diff !== null ? (h.diff >= 0 ? "+" + Math.round(h.diff) : Math.round(h.diff)) : "-"
-    let netColor = netAsset >= 0 ? "color:#1e7a55" : "color:#c0392b"
-    tableHTML += `<tr>
-      <td>${h.age}</td>
-      <td class="clickable" onclick="toggleDetail('detail${i}')">▼</td>
-      <td>${Math.round(h.cash)}</td>
-      <td>${Math.round(h.invested)}</td>
-      <td>${Math.round(h.remainingLoan)}</td>
+function renderTable() {
+  const disp = Math.min(maxYearDisplay, simHistory.length)
+  document.getElementById('tableRange').textContent =
+    `${simHistory[0].age}〜${simHistory[disp - 1].age}歳`
+  let html = `<table>
+    <tr><th>年齢</th><th>詳細</th><th>現金</th><th>投資</th><th>残債</th><th>金利%</th><th>純資産</th><th>前年比</th></tr>`
+  for (let i = 0; i < disp; i++) {
+    const h   = simHistory[i]
+    const net = Math.round(h.cash + h.invested - h.remainingLoan)
+    const diffStr = h.diff !== null ? (h.diff >= 0 ? '+' : '') + Math.round(h.diff).toLocaleString() : '-'
+    const netColor = net >= 0 ? 'color:#106040;font-weight:800' : 'color:#c03030;font-weight:800'
+    const hasEv = h.events.length > 0
+    html += `<tr>
+      <td>${h.age}${hasEv ? ' 🎉' : ''}</td>
+      <td class="clickable" onclick="toggleDetail('dt${i}')">▼</td>
+      <td>${Math.round(h.cash).toLocaleString()}</td>
+      <td>${Math.round(h.invested).toLocaleString()}</td>
+      <td>${Math.round(h.remainingLoan).toLocaleString()}</td>
       <td>${(h.annualRate * 100).toFixed(2)}</td>
-      <td style="${netColor};font-weight:700">${netAsset}</td>
-      <td>${diffStr}</td>
+      <td style="${netColor}">${net.toLocaleString()}</td>
+      <td style="${h.diff >= 0 ? 'color:#106040' : 'color:#c03030'}">${diffStr}</td>
     </tr>
-    <tr id="detail${i}" class="detailRow" style="display:none">
+    <tr id="dt${i}" class="detailRow" style="display:none">
       <td colspan="8">
-        <b>🎉 イベント：</b>${h.events.length ? h.events.join("、") : "なし"}<br>
-        <b>💹 投資：</b>元本 ${Math.round(h.investedPrincipal)}万円 ／ 運用益 ${Math.round(h.invested - h.investedPrincipal)}万円<br>
-        <b>🏠 ローン：</b>年間元本 ${Math.round(h.yearlyPrincipal)}万円 ／ 利息 ${Math.round(h.yearlyInterest)}万円
+        ${hasEv ? '<b>🎉 イベント：</b>' + h.events.join('、') + '<br>' : ''}
+        <b>💹 投資：</b>元本 ${Math.round(h.investedPrincipal).toLocaleString()}万円 ／ 運用益 ${Math.round(h.invested - h.investedPrincipal).toLocaleString()}万円<br>
+        <b>🏠 ローン：</b>年間元本 ${Math.round(h.yearlyPrincipal).toLocaleString()}万円 ／ 利息 ${Math.round(h.yearlyInterest).toLocaleString()}万円
       </td>
     </tr>`
   }
-  tableHTML += '</table>'
-  tableContainer.innerHTML = tableHTML
+  html += '</table>'
+  document.getElementById('tableContainer').innerHTML = html
+}
 
-  // ===== CHART =====
-  let labels = history.slice(0, maxYearDisplay).map(h => h.age + "歳")
-  let cashData = history.slice(0, maxYearDisplay).map(h => Math.round(h.cash))
-  let investData = history.slice(0, maxYearDisplay).map(h => Math.round(h.invested))
-  let loanData = history.slice(0, maxYearDisplay).map(h => Math.round(h.remainingLoan))
-  let netData = history.slice(0, maxYearDisplay).map(h => Math.round(h.cash + h.invested - h.remainingLoan))
+function renderChart() {
+  const disp = Math.min(maxYearDisplay, simHistory.length)
+  const labels   = simHistory.slice(0, disp).map(h => h.age + '歳')
+  const netData  = simHistory.slice(0, disp).map(h => Math.round(h.cash + h.invested - h.remainingLoan))
+  const cashData = simHistory.slice(0, disp).map(h => Math.round(h.cash))
+  const invData  = simHistory.slice(0, disp).map(h => Math.round(h.invested))
+  const loanData = simHistory.slice(0, disp).map(h => Math.round(h.remainingLoan))
 
   if (assetChart) assetChart.destroy()
-  assetChart = new Chart(document.getElementById("assetChart").getContext("2d"), {
+  assetChart = new Chart(document.getElementById('assetChart').getContext('2d'), {
     type: 'line',
     data: {
       labels,
       datasets: [
-        { label: '純資産', data: netData, borderColor: '#3b9edd', backgroundColor: 'rgba(59,158,221,0.1)', borderWidth: 3, tension: 0.4, fill: true, pointRadius: 4 },
-        { label: '現金', data: cashData, borderColor: '#4cba8b', backgroundColor: 'transparent', borderWidth: 2, tension: 0.4, pointRadius: 3 },
-        { label: '投資', data: investData, borderColor: '#ffc84a', backgroundColor: 'transparent', borderWidth: 2, tension: 0.4, pointRadius: 3 },
-        { label: '残債', data: loanData, borderColor: '#ff7259', backgroundColor: 'transparent', borderWidth: 2, borderDash: [6,3], tension: 0.4, pointRadius: 3 }
+        { label:'純資産', data:netData,  borderColor:'#0ea898', backgroundColor:'rgba(14,168,152,.10)', borderWidth:3, tension:.4, fill:true,  pointRadius:3 },
+        { label:'現金',   data:cashData, borderColor:'#3dba8c', backgroundColor:'transparent',           borderWidth:2, tension:.4, fill:false, pointRadius:2 },
+        { label:'投資',   data:invData,  borderColor:'#ffc130', backgroundColor:'transparent',           borderWidth:2, tension:.4, fill:false, pointRadius:2 },
+        { label:'残債',   data:loanData, borderColor:'#ff5f5f', backgroundColor:'transparent',           borderWidth:2, tension:.4, fill:false, pointRadius:2, borderDash:[5,3] }
       ]
     },
     options: {
-      responsive: true,
-      plugins: {
-        legend: { position: 'bottom', labels: { font: { family: 'Noto Sans JP', size: 12 }, padding: 16 } }
-      },
-      scales: {
-        y: { ticks: { font: { family: 'Noto Sans JP', size: 11 } }, grid: { color: '#e8f4ff' } },
-        x: { ticks: { font: { family: 'Noto Sans JP', size: 11 } }, grid: { color: '#e8f4ff' } }
+      responsive:true,
+      plugins:{ legend:{ position:'bottom', labels:{ font:{family:'Noto Sans JP',size:11}, padding:12 } } },
+      scales:{
+        y:{ ticks:{font:{family:'Noto Sans JP',size:10}}, grid:{color:'#eef4fb'} },
+        x:{ ticks:{font:{family:'Noto Sans JP',size:10}, maxRotation:45}, grid:{color:'#eef4fb'} }
       }
     }
   })
+}
 
-  // Show result section
-  resultSection.style.display = 'block'
-  resultSection.classList.add('fade-in')
+// ===== SAVE =====
+function saveSim() {
+  if (!window.latestResult) { alert('先にシミュレーションしてください'); return }
+  let title = prompt('タイトルを入力（任意）')
+  if (!title || !title.trim()) title = '無題（' + new Date().toLocaleDateString() + '）'
+
+  const events = []
+  document.querySelectorAll('.event').forEach(e => {
+    events.push({
+      age: e.querySelector('.age').value, type: e.querySelector('.type').value,
+      amount: e.querySelector('.amount').value, note: e.querySelector('.note').value
+    })
+  })
+  const rates = []
+  document.querySelectorAll('.rateChangeRow').forEach(r => {
+    rates.push({ age: r.querySelector('.rateAge').value, rate: r.querySelector('.rateValue').value })
+  })
+  const prepays = []
+  document.querySelectorAll('.prepayRow').forEach(p => {
+    prepays.push({ age: p.querySelector('.prepayAge').value, amount: p.querySelector('.prepayAmount').value })
+  })
+
+  const history = JSON.parse(localStorage.getItem('lifeRunnerSaved') || '[]')
+  history.unshift({
+    title, net: window.latestResult.net, age: window.latestResult.age,
+    inputs: {
+      startAge: n('startAge'), loanStartAge: n('loanStartAge'),
+      income: n('income'), bonusTimes: n('bonusTimes'), bonusAmount: n('bonusAmount'),
+      savings: n('savings'), expenses: n('expenses'), investment: n('investment'),
+      investmentReturn: n('investmentReturn'), emergencyTarget: n('emergencyTarget'),
+      loanAmount: n('loanAmount'), interestRate: n('interestRate'), loanYears: n('loanYears')
+    },
+    events, rates, prepays
+  })
+  localStorage.setItem('lifeRunnerSaved', JSON.stringify(history))
   renderSavedHistory()
-  setTimeout(() => resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100)
+}
+
+function loadHistory(i) {
+  const history = JSON.parse(localStorage.getItem('lifeRunnerSaved') || '[]')
+  const h = history[i]
+  if (!h) return
+  Object.keys(h.inputs).forEach(k => { const el = document.getElementById(k); if (el) el.value = h.inputs[k] })
+
+  const ec = document.getElementById('eventList')
+  ec.innerHTML = ''
+  h.events?.forEach(ev => {
+    addEvent()
+    const last = ec.lastElementChild
+    last.querySelector('.age').value = ev.age
+    last.querySelector('.type').value = ev.type
+    last.querySelector('.amount').value = ev.amount
+    last.querySelector('.note').value = ev.note
+  })
+
+  const rc = document.getElementById('rateChangesContainer')
+  rc.innerHTML = ''
+  h.rates?.forEach(r => {
+    addRateChange()
+    const last = rc.lastElementChild
+    last.querySelector('.rateAge').value = r.age
+    last.querySelector('.rateValue').value = r.rate
+  })
+
+  const pc = document.getElementById('prepayListContainer')
+  pc.innerHTML = ''
+  h.prepays?.forEach(p => {
+    addPrepay()
+    const last = pc.lastElementChild
+    last.querySelector('.prepayAge').value = p.age
+    last.querySelector('.prepayAmount').value = p.amount
+  })
+
+  maxYearDisplay = 10
+  calculateAndRender()
+  goResult()
+}
+
+function deleteHistory(i) {
+  const history = JSON.parse(localStorage.getItem('lifeRunnerSaved') || '[]')
+  history.splice(i, 1)
+  localStorage.setItem('lifeRunnerSaved', JSON.stringify(history))
+  renderSavedHistory()
+}
+
+function renderSavedHistory() {
+  const history = JSON.parse(localStorage.getItem('lifeRunnerSaved') || '[]')
+  if (history.length === 0) {
+    document.getElementById('savedList').innerHTML = '<div class="empty-saved">📭 保存されたシミュレーションはありません</div>'
+    return
+  }
+  document.getElementById('savedList').innerHTML = history.map((h, i) => `
+    <div class="saved-item">
+      <div class="saved-info">
+        <div class="saved-title">${h.title}</div>
+        <div class="saved-meta">${h.age}歳時点 ｜ 純資産 ${h.net >= 0 ? '+' : ''}${h.net.toLocaleString()}万円</div>
+      </div>
+      <div class="saved-acts">
+        <button class="load-btn" onclick="loadHistory(${i})">読込</button>
+        <button class="del-btn"  onclick="deleteHistory(${i})">削除</button>
+      </div>
+    </div>`).join('')
 }
 
 renderSavedHistory()
