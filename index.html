@@ -89,7 +89,14 @@ margin-top:20px; position:relative; z-index:1;
 .sec-sub { font-size:11px; color:var(–light); margin-top:1px; }
 
 /* CARD */
-.card { background:var(–card); border-radius:var(–r); box-shadow:var(–sh); padding:18px; margin-bottom:12px; border:1.5px solid var(–border); }
+.card {
+background: #ffffff;
+border-radius: 18px;
+box-shadow: 0 2px 14px rgba(20,80,160,.10), 0 1px 4px rgba(20,80,160,.06);
+padding: 18px;
+margin-bottom: 12px;
+border: 1.5px solid #d8eaf5;
+}
 
 /* FIELDS */
 .row2 { display:flex; flex-wrap:wrap; margin:-5px; }
@@ -191,13 +198,13 @@ transition:transform .14s, box-shadow .14s;
 .comment-card { background:var(–teal-s); border:1.5px solid #a8e8e0; border-radius:var(–r); padding:16px 18px; margin-bottom:12px; font-size:13px; line-height:1.85; color:#0a5048; }
 
 /* CHART */
-.chart-card { background:#fff; border-radius:var(–r); border:1.5px solid var(–border); box-shadow:var(–sh); padding:18px 14px; margin-bottom:12px; }
+.chart-card { background:#fff; border-radius:18px; border:1.5px solid #d8eaf5; box-shadow:0 2px 14px rgba(20,80,160,.10); padding:18px 14px; margin-bottom:12px; }
 .chart-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
 .chart-title { font-family:‘Nunito’,sans-serif; font-weight:800; font-size:15px; }
 
 /* TABLE */
-.table-card { background:#fff; border-radius:var(–r); border:1.5px solid var(–border); box-shadow:var(–sh); overflow:hidden; margin-bottom:12px; }
-.table-head { padding:14px 16px 10px; border-bottom:1.5px solid var(–border); display:flex; align-items:center; justify-content:space-between; }
+.table-card { background:#fff; border-radius:18px; border:1.5px solid #d8eaf5; box-shadow:0 2px 14px rgba(20,80,160,.10); overflow:hidden; margin-bottom:12px; }
+.table-head { padding:14px 16px 10px; border-bottom:1.5px solid #d8eaf5; display:flex; align-items:center; justify-content:space-between; }
 .table-head .th-title { font-family:‘Nunito’,sans-serif; font-weight:800; font-size:15px; }
 .table-scroll { overflow-x:auto; }
 table { width:100%; border-collapse:collapse; font-size:12px; }
@@ -548,7 +555,8 @@ border:1.5px solid transparent; position:relative;
 </div>
 
 
-<div class="philo-box" id="philoBox">
+<button class="philo-btn" id="philoBtn">&#10024; 心構え</button>
+<div class="philo-box" id="philoBox" style="display:none">
   揺れたら立ち止まればいい。<br>
   弱ったらここに帰ってこい。<br>
   整えたらまた進めばいい。<br>
@@ -1186,12 +1194,15 @@ function renderAdvice() {
   for (var i = 0; i < simHist.length; i++) {
     var h = simHist[i];
     var net = h.cash + h.invested - h.remainingLoan;
-    // 純資産がプラスかつ現金が防衛資金の1.5倍以上あれば増額可能と判断
     if (net > 0 && h.cash > emergencyTgt * 1.5 && !investUpAge) {
       investUpAge = h.age;
-      // 余裕資金から追加できる投資額を試算（現金超過分の半分を月割り）
-      var extra = (h.cash - emergencyTgt * 1.5) / 12;
-      investUpAmt = Math.max(1, Math.round(extra));
+      // 月あたりの余剰 = 年間現金増加分の半分を月割り（前年との差から試算）
+      var idx = i;
+      var prevCash = idx > 0 ? simHist[idx-1].cash : h.cash;
+      var annualSurplus = Math.max(0, h.cash - prevCash);
+      // 月の追加可能額は年間余剰の半分を12で割る、かつ上限5万
+      var extra = Math.min(5, Math.max(1, Math.round(annualSurplus / 2 / 12)));
+      investUpAmt = extra;
       break;
     }
   }
