@@ -774,33 +774,34 @@ border:1.5px solid transparent; position:relative;
       <span style="font-size:26px">&#127979;</span>
       <h3 style="margin:0">教育費シミュレーター</h3>
     </div>
-    <p style="margin-bottom:16px">子どもの進学コースから教育費をイベントに追加します</p>
-    <div class="furu-row2">
-      <div class="furu-field">
-        <label>子どもの現在年齢</label>
-        <div class="exp-wrap"><input type="number" id="edu_childage" value="0" min="0" max="18" inputmode="decimal" oninput="calcEdu()"><span class="exp-unit">歳</span></div>
-      </div>
-      <div class="furu-field">
-        <label>親の現在年齢</label>
-        <div class="exp-wrap"><input type="number" id="edu_parentage" value="35" inputmode="decimal" oninput="calcEdu()"><span class="exp-unit">歳</span></div>
-      </div>
+    <p style="margin-bottom:14px">子どもの進学コースから教育費をイベントに追加します</p>
+    <div style="background:#fff8e6;border:1.5px solid #ffe080;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:11px;color:#806000;line-height:1.6">
+      &#128218; 文部科学省「子供の学習費調査（令和5年度）」をもとにした概算値です。<br>
+      授業料・学用品・給食費に加え、<b>塾代・習い事・スポーツ活動なども含む</b>平均的な金額です。
     </div>
-    <div class="furu-field" style="margin-bottom:12px">
-      <label>進学コース</label>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
-        <label class="edu-course-btn"><input type="radio" name="edu_course" value="all_pub" checked onchange="calcEdu()"> &#127968; 全部公立</label>
-        <label class="edu-course-btn"><input type="radio" name="edu_course" value="uni_pri" onchange="calcEdu()"> &#127979; 大学のみ私立</label>
-        <label class="edu-course-btn"><input type="radio" name="edu_course" value="hi_pri" onchange="calcEdu()"> &#127979; 高校〜私立</label>
-        <label class="edu-course-btn"><input type="radio" name="edu_course" value="all_pri" onchange="calcEdu()"> &#127775; 全部私立</label>
-      </div>
-    </div>
-    <div id="eduResult" style="margin-top:14px"></div>
-    <div id="eduEvents" style="margin-top:10px;background:#e4f5ee;border-radius:12px;padding:12px 14px;font-size:12px;color:#106040;line-height:1.8;display:none"></div>
-    <div style="margin-top:16px;display:flex;gap:8px">
-      <button onclick="closeEduModal()" style="flex:1;padding:12px;background:#fff;border:2px solid #d8eaf5;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer;color:#9ab0c4">閉じる</button>
-      <button onclick="applyEdu()" style="flex:2;padding:12px;background:linear-gradient(135deg,#3dba8c,#2ea87a);border:none;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer;color:#fff">&#10003; イベントに反映</button>
-    </div>
-    <div style="margin-top:8px;font-size:10px;color:#9ab0c4;text-align:center">※ 各段階の入学費用が臨時支出としてイベントに追加されます</div>
+
+```
+<div class="furu-field">
+  <label>親の現在年齢</label>
+  <div class="exp-wrap" style="width:140px"><input type="number" id="edu_parentage" value="35" inputmode="decimal" oninput="calcEdu()"><span class="exp-unit">歳</span></div>
+</div>
+
+<div id="edu_children_list" style="margin-top:12px"></div>
+
+<button onclick="addChild()" style="width:100%;padding:11px;background:#fff;border:2px dashed #a0dcc0;border-radius:12px;color:#106040;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px;font-family:'Noto Sans JP',sans-serif">
+  ＋ 子どもを追加
+</button>
+
+<div id="eduResult" style="margin-top:16px"></div>
+<div id="eduEvents" style="margin-top:10px;background:#e4f5ee;border-radius:12px;padding:12px 14px;font-size:12px;color:#106040;line-height:1.8;display:none"></div>
+
+<div style="margin-top:16px;display:flex;gap:8px">
+  <button onclick="closeEduModal()" style="flex:1;padding:12px;background:#fff;border:2px solid #d8eaf5;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer;color:#9ab0c4">閉じる</button>
+  <button onclick="applyEdu()" style="flex:2;padding:12px;background:linear-gradient(135deg,#3dba8c,#2ea87a);border:none;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer;color:#fff">&#10003; イベントに反映</button>
+</div>
+<div style="margin-top:8px;font-size:10px;color:#9ab0c4;text-align:center">※ 各段階の年間費用が支出増加としてイベントに追加されます</div>
+```
+
   </div>
 </div>
 
@@ -2117,69 +2118,132 @@ function applyCar() {
   showToast('&#10003; カーライフのイベントを' + carEventsData.length + '件追加しました');
 }
 
-// ===== 教育費シミュレーター =====
+// ===== 教育費シミュレーター（複数人対応） =====
 var eduEventsData = [];
+var eduChildCount = 0;
 
-// 文科省データベースの概算（万円）
 var EDU_COST = {
-  nursery:    { pub: 22,  pri: 53  }, // 幼稚園3年間
-  elem:       { pub: 211, pri: 960 }, // 小学校6年間
-  middle:     { pub: 161, pri: 421 }, // 中学校3年間
-  high:       { pub: 154, pri: 316 }, // 高校3年間
-  uni_hum:    { pub: 243, pri: 400 }, // 大学4年間（文系）
-  uni_sci:    { pub: 255, pri: 550 }, // 大学4年間（理系）
+  nursery: { pub: 19,  pri: 35  }, // 幼稚園（令和5年度・年額）
+  elem:    { pub: 34,  pri: 183 }, // 小学校
+  middle:  { pub: 54,  pri: 156 }, // 中学校
+  high:    { pub: 60,  pri: 103 }, // 高校
+  uni:     { pub: 61,  pri: 100 }  // 大学（国公立/私立文系）
 };
 
 function openEduModal() {
+  // 子どもが1人もいなければ初期で1人追加
+  if (eduChildCount === 0) addChild();
   calcEdu();
   document.getElementById('eduModal').classList.add('show');
 }
 function closeEduModal() { document.getElementById('eduModal').classList.remove('show'); }
 
+function addChild() {
+  eduChildCount++;
+  var idx = eduChildCount;
+  var container = document.getElementById('edu_children_list');
+  var div = document.createElement('div');
+  div.id = 'edu_child_' + idx;
+  div.style.cssText = 'background:#f8fcff;border:1.5px solid #d8eaf5;border-radius:14px;padding:14px;margin-bottom:10px;position:relative';
+  div.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
+    + '<div style="font-family:Nunito,sans-serif;font-weight:800;font-size:13px;color:#106040">子ども ' + idx + '人目</div>'
+    + (idx > 1 ? '<button onclick="removeChild(' + idx + ')" style="background:#fff0f0;border:none;border-radius:8px;color:#ff5f5f;font-size:11px;font-weight:700;padding:4px 10px;cursor:pointer;font-family:Noto Sans JP,sans-serif">削除</button>' : '')
+    + '</div>'
+    + '<div style="display:flex;gap:10px;margin-bottom:10px">'
+    + '<div style="flex:1"><div style="font-size:11px;font-weight:700;color:#5a7a96;margin-bottom:5px">現在の年齢</div>'
+    + '<div class="exp-wrap"><input type="number" id="edu_age_' + idx + '" value="0" min="0" max="18" inputmode="decimal" oninput="calcEdu()"><span class="exp-unit">歳</span></div></div>'
+    + '</div>'
+    + '<div style="font-size:11px;font-weight:700;color:#5a7a96;margin-bottom:6px">進学コース</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">'
+    + '<label class="edu-course-btn"><input type="radio" name="edu_course_' + idx + '" value="all_pub" checked onchange="calcEdu()"> &#127968; 全部公立</label>'
+    + '<label class="edu-course-btn"><input type="radio" name="edu_course_' + idx + '" value="uni_pri" onchange="calcEdu()"> &#127979; 大学のみ私立</label>'
+    + '<label class="edu-course-btn"><input type="radio" name="edu_course_' + idx + '" value="hi_pri" onchange="calcEdu()"> &#127979; 高校〜私立</label>'
+    + '<label class="edu-course-btn"><input type="radio" name="edu_course_' + idx + '" value="all_pri" onchange="calcEdu()"> &#127775; 全部私立</label>'
+    + '</div>';
+  container.appendChild(div);
+  calcEdu();
+}
+
+function removeChild(idx) {
+  var el = document.getElementById('edu_child_' + idx);
+  if (el) el.remove();
+  calcEdu();
+}
+
 function calcEdu() {
-  var childAge  = Number(document.getElementById('edu_childage').value) || 0;
   var parentAge = Number(document.getElementById('edu_parentage').value) || 35;
-  var course    = document.querySelector('input[name="edu_course"]:checked');
-  var courseVal = course ? course.value : 'all_pub';
-
-  var isPriNursery = courseVal === 'all_pri';
-  var isPriElem    = courseVal === 'all_pri';
-  var isPriMiddle  = courseVal === 'all_pri';
-  var isPriHigh    = courseVal === 'all_pri' || courseVal === 'hi_pri';
-  var isPriUni     = courseVal === 'all_pri' || courseVal === 'uni_pri' || courseVal === 'hi_pri';
-
-  var costs = [
-    { label: '幼稚園入学', ageChild: 3,  cost: Math.round((isPriNursery ? EDU_COST.nursery.pri : EDU_COST.nursery.pub) / 3) },
-    { label: '小学校入学', ageChild: 6,  cost: Math.round((isPriElem    ? EDU_COST.elem.pri    : EDU_COST.elem.pub)    / 6) },
-    { label: '中学入学',   ageChild: 12, cost: Math.round((isPriMiddle  ? EDU_COST.middle.pri  : EDU_COST.middle.pub)  / 3) },
-    { label: '高校入学',   ageChild: 15, cost: Math.round((isPriHigh    ? EDU_COST.high.pri    : EDU_COST.high.pub)    / 3) },
-    { label: '大学入学',   ageChild: 18, cost: Math.round((isPriUni     ? EDU_COST.uni_hum.pri : EDU_COST.uni_hum.pub) / 4) },
-  ];
-
   eduEventsData = [];
-  var total = 0;
+  var totalMap = {}; // 年齢→合計コストのマップ（同じ年齢分を合算）
+  var grandTotal = 0;
+  var childSummaries = [];
 
-  costs.forEach(function(c) {
-    if (c.ageChild < childAge) return; // 既に過ぎた段階はスキップ
-    var parentAtEvent = parentAge + (c.ageChild - childAge);
-    eduEventsData.push({ age: parentAtEvent, type: 'expenseAdd', amount: c.cost, note: c.label + '（年間約' + c.cost + '万円）', ageChild: c.ageChild });
-    total += c.cost;
+  // 現存する子どものカードを走査
+  var children = document.querySelectorAll('[id^="edu_child_"]');
+  children.forEach(function(card) {
+    var idx = card.id.replace('edu_child_', '');
+    var ageEl = document.getElementById('edu_age_' + idx);
+    if (!ageEl) return;
+    var childAge  = Number(ageEl.value) || 0;
+    var courseEl  = document.querySelector('input[name="edu_course_' + idx + '"]:checked');
+    var courseVal = courseEl ? courseEl.value : 'all_pub';
+
+    var isPriNursery = courseVal === 'all_pri';
+    var isPriElem    = courseVal === 'all_pri';
+    var isPriMiddle  = courseVal === 'all_pri';
+    var isPriHigh    = courseVal === 'all_pri' || courseVal === 'hi_pri';
+    var isPriUni     = courseVal !== 'all_pub';
+
+    var stages = [
+      { label:'幼稚園', ageChild:3,  cost: Math.round((isPriNursery ? EDU_COST.nursery.pri : EDU_COST.nursery.pub) / 3) },
+      { label:'小学校', ageChild:6,  cost: Math.round((isPriElem    ? EDU_COST.elem.pri    : EDU_COST.elem.pub)    / 6) },
+      { label:'中学校', ageChild:12, cost: Math.round((isPriMiddle  ? EDU_COST.middle.pri  : EDU_COST.middle.pub)  / 3) },
+      { label:'高校',   ageChild:15, cost: Math.round((isPriHigh    ? EDU_COST.high.pri    : EDU_COST.high.pub)    / 3) },
+      { label:'大学',   ageChild:18, cost: Math.round((isPriUni     ? EDU_COST.uni.pri     : EDU_COST.uni.pub)     / 4) }
+    ];
+
+    var childTotal = 0;
+    var courseLabel = {all_pub:'全公立', uni_pri:'大学私立', hi_pri:'高校〜私立', all_pri:'全私立'}[courseVal];
+    stages.forEach(function(st) {
+      if (st.ageChild < childAge) return;
+      var parentAtEvent = parentAge + (st.ageChild - childAge);
+      childTotal += st.cost;
+      grandTotal += st.cost;
+      // 同じ年齢のイベントは合算
+      var key = parentAtEvent + '_' + st.label;
+      eduEventsData.push({ age: parentAtEvent, type: 'expenseAdd', amount: st.cost, note: '教育費（子' + idx + '：' + st.label + '）', ageChild: st.ageChild });
+    });
+    childSummaries.push({ idx: idx, total: childTotal, course: courseLabel });
   });
 
-  // 結果
-  var courseLabel = { all_pub:'全部公立', uni_pri:'大学のみ私立', hi_pri:'高校〜私立', all_pri:'全部私立' }[courseVal];
-  var html = '<div class="furu-result-grid">'
-    + '<div class="furu-kpi green"><div class="fk-label">コース</div><div class="fk-value" style="font-size:14px">' + courseLabel + '</div><div class="fk-unit">&nbsp;</div></div>'
-    + '<div class="furu-kpi blue"><div class="fk-label">年間平均費用目安</div><div class="fk-value">' + Math.round(total / 15) + '</div><div class="fk-unit">万円/年</div></div>'
-    + '</div>';
-  document.getElementById('eduResult').innerHTML = html;
+  // 結果表示
+  var html = '';
+  if (childSummaries.length === 0) {
+    html = '<div style="text-align:center;color:#9ab0c4;font-size:13px;padding:16px">子どもを追加してください</div>';
+  } else {
+    html = '<div style="background:linear-gradient(135deg,#1a3560,#0d2040);border-radius:16px;padding:16px 18px;margin-bottom:10px">'
+      + '<div style="color:rgba(255,255,255,.6);font-size:12px;margin-bottom:4px">教育費総額（全員分）</div>'
+      + '<div style="font-family:Nunito,sans-serif;font-weight:900;font-size:28px;color:#fff">' + grandTotal.toLocaleString() + '<span style="font-size:14px;margin-left:4px">万円</span></div>'
+      + '</div>';
 
-  var evHtml = '<b>追加されるイベント（年間増加額）：</b><br>' + eduEventsData.map(function(e) {
-    return '・親' + e.age + '歳（子' + e.ageChild + '歳）：' + e.label + ' +' + e.amount + '万円/年';
-  }).join('<br>');
-  var evEl = document.getElementById('eduEvents');
-  evEl.innerHTML = evHtml;
-  evEl.style.display = eduEventsData.length ? 'block' : 'none';
+    // 子どもごとの内訳
+    childSummaries.forEach(function(c) {
+      html += '<div class="furu-kpi green" style="margin-bottom:8px;text-align:left;padding:12px 14px">'
+        + '<div style="display:flex;justify-content:space-between;align-items:center">'
+        + '<div style="font-size:12px;font-weight:700">子ども' + c.idx + '人目（' + c.course + '）</div>'
+        + '<div style="font-family:Nunito,sans-serif;font-weight:900;font-size:18px">' + c.total.toLocaleString() + '万円</div>'
+        + '</div></div>';
+    });
+
+    if (eduEventsData.length) {
+      html += '<div style="background:#e4f5ee;border-radius:12px;padding:12px 14px;font-size:12px;color:#106040;line-height:1.9;margin-top:4px">'
+        + '<b>反映されるイベント：</b><br>'
+        + eduEventsData.map(function(e) { return '・親' + e.age + '歳（子' + e.ageChild + '歳）：' + e.note + '（+' + e.amount + '万/年）'; }).join('<br>')
+        + '</div>';
+    }
+  }
+
+  document.getElementById('eduResult').innerHTML = html;
+  document.getElementById('eduEvents').style.display = 'none';
 }
 
 function applyEdu() {
