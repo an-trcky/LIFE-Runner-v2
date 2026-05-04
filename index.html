@@ -81,7 +81,7 @@ margin-top:20px; position:relative; z-index:1;
 .wave svg { display:block; }
 
 /* LAYOUT */
-.wrap { padding: 0 16px 100px; }
+.wrap { padding: 0 16px 120px; }
 .sec-head { display:flex; align-items:center; gap:10px; margin:24px 0 10px; }
 .sec-icon { width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
 .sec-head h2 { font-family:‘Nunito’,sans-serif; font-weight:800; font-size:16px; flex:1; }
@@ -286,6 +286,38 @@ border:1.5px solid transparent; position:relative;
 .advice-card .ac-body { font-size:13px; line-height:1.75; }
 .advice-card .ac-num  { font-family:‘Nunito’,sans-serif; font-weight:900; font-size:20px; }
 
+/* CAR STATUS BTN */
+.car-status-btn { flex:1; padding:10px 8px; border-radius:12px; border:1.5px solid #d8eaf5; background:#fff; color:#5a7a96; font-size:12px; font-weight:700; cursor:pointer; font-family:‘Noto Sans JP’,sans-serif; transition:background .15s; text-align:center; }
+.car-status-btn.active { background:#f0eeff; border-color:#c0b0f0; color:#5040c0; }
+
+/* CAR CYCLE BTN */
+.car-cycle-btn { padding:8px 14px; border-radius:20px; border:1.5px solid #d8eaf5; background:#fff; color:#5a7a96; font-size:13px; font-weight:700; cursor:pointer; font-family:‘Noto Sans JP’,sans-serif; transition:background .15s; }
+.car-cycle-btn.active { background:#f0eeff; border-color:#c0b0f0; color:#5040c0; }
+
+/* EDU COURSE BTN */
+.edu-course-btn { display:flex; align-items:center; gap:6px; padding:10px 12px; background:#f8fcff; border:1.5px solid #d8eaf5; border-radius:10px; font-size:12px; font-weight:700; color:#5a7a96; cursor:pointer; transition:background .15s; }
+.edu-course-btn:has(input:checked) { background:#e4f5ee; border-color:#a0dcc0; color:#106040; }
+
+/* TOOL BTN */
+.tool-btn { width:100%; display:flex; align-items:center; gap:12px; padding:14px 16px; border:1.5px solid; border-radius:14px; cursor:pointer; text-align:left; transition:opacity .15s; }
+.tool-btn:active { opacity:.8; }
+
+/* FURUSATO */
+.furu-field { margin-bottom:12px; }
+.furu-field label { display:block; font-size:12px; font-weight:700; color:#5a7a96; margin-bottom:5px; }
+.furu-row2 { display:flex; gap:10px; margin-bottom:0; }
+.furu-row2 .furu-field { flex:1; }
+.furu-result-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.furu-kpi { border-radius:14px; padding:14px 12px; text-align:center; border:1.5px solid transparent; }
+.furu-kpi .fk-label { font-size:10px; font-weight:700; opacity:.75; margin-bottom:5px; }
+.furu-kpi .fk-value { font-family:‘Nunito’,sans-serif; font-weight:900; font-size:18px; line-height:1.1; }
+.furu-kpi .fk-unit { font-size:10px; font-weight:700; opacity:.65; margin-top:2px; }
+.furu-kpi.orange { background:#fff1e6; color:#903010; border-color:#ffc090; }
+.furu-kpi.teal   { background:#e4faf7; color:#0a7870; border-color:#a8e8e0; }
+.furu-kpi.blue   { background:#e6f3fd; color:#1060a0; border-color:#b0d5f0; }
+.furu-kpi.green  { background:#e4f5ee; color:#106040; border-color:#a0dcc0; }
+.furu-kpi.red    { background:#fff0f0; color:#c03030; border-color:#ffb0b0; }
+
 /* EXPENSE DETAIL */
 .exp-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; gap:10px; }
 .exp-row label { font-size:12px; font-weight:700; color:#5a7a96; flex:1; }
@@ -296,7 +328,7 @@ border:1.5px solid transparent; position:relative;
 .exp-unit { position:absolute; right:8px; top:50%; transform:translateY(-50%); font-size:11px; font-weight:700; color:#9ab0c4; pointer-events:none; }
 
 /* NAV */
-.bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px; background:rgba(255,255,255,.94); border-top:1.5px solid var(–border); backdrop-filter:blur(12px); display:none; z-index:100; padding-bottom:env(safe-area-inset-bottom,0px); }
+.bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px; background:rgba(255,255,255,.96); border-top:1.5px solid #d8eaf5; backdrop-filter:blur(12px); display:flex; z-index:100; padding-bottom:env(safe-area-inset-bottom,0px); box-shadow:0 -4px 20px rgba(20,80,160,.08); }
 .bottom-nav.show { display:flex; }
 .nav-item { flex:1; display:flex; flex-direction:column; align-items:center; padding:10px 0 8px; cursor:pointer; font-size:10px; font-weight:700; color:var(–light); gap:3px; border:none; background:transparent; transition:color .18s; font-family:‘Noto Sans JP’,sans-serif; }
 .nav-icon { font-size:20px; }
@@ -568,19 +600,349 @@ border:1.5px solid transparent; position:relative;
 </div>
 
 
-<button class="philo-btn" id="philoBtn">&#10024; 心構え</button>
-<div class="philo-box" id="philoBox" style="display:none">
-  揺れたら立ち止まればいい。<br>
-  弱ったらここに帰ってこい。<br>
-  整えたらまた進めばいい。<br>
-  LIFE Runnerは人生の相棒だ。
+<!-- 補助計算ツール -->
+<div class="sec-head" style="margin-top:8px">
+  <div class="sec-icon" style="background:#fff1e6">&#128736;</div>
+  <div><h2>補助計算ツール</h2><div class="sec-sub">計算結果をシミュレーションに反映できます</div></div>
 </div>
+<div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px" id="toolsCard">
+  <button onclick="openFurusatoModal()" class="tool-btn" style="background:linear-gradient(135deg,#fff1e6,#ffe8d6);border-color:#ffc090">
+    <span style="font-size:22px">&#127873;</span>
+    <div style="flex:1">
+      <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:#903010">ふるさと納税シミュレーター</div>
+      <div style="font-size:11px;color:#b06040;margin-top:2px">寄付上限額・あと使える額を確認</div>
+    </div>
+    <span style="color:#ffc090;font-size:14px">&#9654;</span>
+  </button>
+  <button onclick="openNenkinModal()" class="tool-btn" style="background:linear-gradient(135deg,#e6f3fd,#d6eaf8);border-color:#b0d5f0">
+    <span style="font-size:22px">&#128188;</span>
+    <div style="flex:1">
+      <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:#1060a0">年金受取額シミュレーター</div>
+      <div style="font-size:11px;color:#3070b0;margin-top:2px">職業・年収から受給額の目安を確認</div>
+    </div>
+    <span style="color:#b0d5f0;font-size:14px">&#9654;</span>
+  </button>
+  <button onclick="openCarModal()" class="tool-btn" style="background:linear-gradient(135deg,#f0eeff,#e8e4fc);border-color:#c0b0f0">
+    <span style="font-size:22px">&#128664;</span>
+    <div style="flex:1">
+      <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:#5040c0">車購入シミュレーター</div>
+      <div style="font-size:11px;color:#6050d0;margin-top:2px">購入・維持費をイベントに反映</div>
+    </div>
+    <span style="color:#c0b0f0;font-size:14px">&#9654;</span>
+  </button>
+  <button onclick="openEduModal()" class="tool-btn" style="background:linear-gradient(135deg,#e4f5ee,#d4f0e4);border-color:#a0dcc0">
+    <span style="font-size:22px">&#127979;</span>
+    <div style="flex:1">
+      <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:#106040">教育費シミュレーター</div>
+      <div style="font-size:11px;color:#207050;margin-top:2px">進学コースごとの費用をイベントに反映</div>
+    </div>
+    <span style="color:#a0dcc0;font-size:14px">&#9654;</span>
+  </button>
+</div>
+
 
 <div class="sec-head" style="margin-top:8px">
   <div class="sec-icon" style="background:var(--blue-s)">&#128193;</div>
   <div><h2>保存済みシミュレーション</h2></div>
 </div>
 <div class="card"><div id="savedList"></div></div>
+```
+
+  </div>
+</div>
+
+<!-- 補助ツール一覧モーダル -->
+
+<div class="modal-overlay" id="toolsModal">
+  <div class="modal-box" style="padding:22px 20px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <span style="font-size:26px">&#128736;</span>
+      <h3 style="margin:0">補助計算ツール</h3>
+    </div>
+    <p style="margin-bottom:16px">使いたいツールを選んでください</p>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button onclick="closeToolsModal();openFurusatoModal()" class="tool-btn" style="background:linear-gradient(135deg,#fff1e6,#ffe8d6);border-color:#ffc090">
+        <span style="font-size:22px">&#127873;</span>
+        <div style="flex:1"><div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:#903010">ふるさと納税</div><div style="font-size:11px;color:#b06040;margin-top:2px">参考確認</div></div>
+        <span style="color:#ffc090;font-size:14px">&#9654;</span>
+      </button>
+      <button onclick="closeToolsModal();openNenkinModal()" class="tool-btn" style="background:linear-gradient(135deg,#e6f3fd,#d6eaf8);border-color:#b0d5f0">
+        <span style="font-size:22px">&#128188;</span>
+        <div style="flex:1"><div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:#1060a0">年金受取額</div><div style="font-size:11px;color:#3070b0;margin-top:2px">参考確認</div></div>
+        <span style="color:#b0d5f0;font-size:14px">&#9654;</span>
+      </button>
+      <button onclick="closeToolsModal();openCarModal()" class="tool-btn" style="background:linear-gradient(135deg,#f0eeff,#e8e4fc);border-color:#c0b0f0">
+        <span style="font-size:22px">&#128664;</span>
+        <div style="flex:1"><div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:#5040c0">車購入</div><div style="font-size:11px;color:#6050d0;margin-top:2px">イベントに反映</div></div>
+        <span style="color:#c0b0f0;font-size:14px">&#9654;</span>
+      </button>
+      <button onclick="closeToolsModal();openEduModal()" class="tool-btn" style="background:linear-gradient(135deg,#e4f5ee,#d4f0e4);border-color:#a0dcc0">
+        <span style="font-size:22px">&#127979;</span>
+        <div style="flex:1"><div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:#106040">教育費</div><div style="font-size:11px;color:#207050;margin-top:2px">イベントに反映</div></div>
+        <span style="color:#a0dcc0;font-size:14px">&#9654;</span>
+      </button>
+    </div>
+    <button onclick="closeToolsModal()" style="width:100%;margin-top:16px;padding:12px;background:#fff;border:2px solid #d8eaf5;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;cursor:pointer;color:#9ab0c4">閉じる</button>
+  </div>
+</div>
+
+<!-- 車購入モーダル -->
+
+<div class="modal-overlay" id="carModal">
+  <div class="modal-box" style="max-height:92vh;overflow-y:auto;padding:22px 20px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <span style="font-size:26px">&#128664;</span>
+      <h3 style="margin:0">カーライフ総コスト計算機</h3>
+    </div>
+    <p style="margin-bottom:14px">車に生涯いくら使うか把握しましょう</p>
+
+```
+<!-- 現在の状況 -->
+<div style="font-size:11px;font-weight:800;color:#5040c0;background:#f0eeff;padding:6px 12px;border-radius:8px;margin-bottom:12px;letter-spacing:.5px">&#128100; 現在の状況</div>
+<div style="display:flex;gap:8px;margin-bottom:12px">
+  <button class="car-status-btn active" id="car_status_none" onclick="setCarStatus('none',this)">&#128664; 車なし</button>
+  <button class="car-status-btn" id="car_status_have" onclick="setCarStatus('have',this)">&#128260; 今の車を売って買い替え</button>
+</div>
+<div class="furu-field" id="car_current_sell_wrap" style="display:none">
+  <label>今の車の売却・下取り額</label>
+  <div class="exp-wrap"><input type="number" id="car_current_sell" value="50" inputmode="decimal" oninput="calcCar()"><span class="exp-unit">万円</span></div>
+</div>
+
+<!-- 購入計画 -->
+<div style="font-size:11px;font-weight:800;color:#1060a0;background:#e6f3fd;padding:6px 12px;border-radius:8px;margin:4px 0 12px;letter-spacing:.5px">&#127381; 購入計画</div>
+<div class="furu-row2">
+  <div class="furu-field">
+    <label>現在の年齢</label>
+    <div class="exp-wrap"><input type="number" id="car_currentage" value="35" inputmode="decimal" oninput="calcCar()"><span class="exp-unit">歳</span></div>
+  </div>
+  <div class="furu-field">
+    <label>車を手放す年齢</label>
+    <div class="exp-wrap"><input type="number" id="car_endage" value="70" inputmode="decimal" oninput="calcCar()"><span class="exp-unit">歳</span></div>
+  </div>
+</div>
+<div class="furu-row2">
+  <div class="furu-field">
+    <label>車両価格 <span style="font-size:10px;color:#9ab0c4">1台あたり</span></label>
+    <div class="exp-wrap"><input type="number" id="car_price" value="300" inputmode="decimal" oninput="calcCar()"><span class="exp-unit">万円</span></div>
+  </div>
+  <div class="furu-field">
+    <label>乗り換え時の売却額</label>
+    <div class="exp-wrap"><input type="number" id="car_trade" value="80" inputmode="decimal" oninput="calcCar()"><span class="exp-unit">万円</span></div>
+  </div>
+</div>
+<div class="furu-field">
+  <label>乗り換えサイクル</label>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+    <button class="car-cycle-btn active" onclick="setCycle(3,this)">3年</button>
+    <button class="car-cycle-btn" onclick="setCycle(5,this)">5年</button>
+    <button class="car-cycle-btn" onclick="setCycle(7,this)">7年</button>
+    <button class="car-cycle-btn" onclick="setCycle(10,this)">10年</button>
+    <button class="car-cycle-btn" onclick="setCycle(0,this)">自由入力</button>
+  </div>
+  <div id="car_cycle_custom" style="display:none;margin-top:8px">
+    <div class="exp-wrap"><input type="number" id="car_cycle_input" value="3" inputmode="decimal" oninput="calcCar()"><span class="exp-unit">年ごと</span></div>
+  </div>
+</div>
+<div class="furu-row2" style="margin-top:4px">
+  <div class="furu-field">
+    <label>月維持費 <span style="font-size:10px;color:#9ab0c4">駐車場・保険・ガソリン等</span></label>
+    <div class="exp-wrap"><input type="number" id="car_monthly" value="3" inputmode="decimal" oninput="calcCar()"><span class="exp-unit">万円</span></div>
+  </div>
+  <div class="furu-field">
+    <label>自動車税 <span style="font-size:10px;color:#9ab0c4">年額</span></label>
+    <div class="exp-wrap"><input type="number" id="car_tax" value="3" inputmode="decimal" oninput="calcCar()"><span class="exp-unit">万円</span></div>
+  </div>
+</div>
+
+<div id="carResult" style="margin-top:16px"></div>
+
+<div style="margin-top:16px;display:flex;gap:8px">
+  <button onclick="closeCarModal()" style="flex:1;padding:12px;background:#fff;border:2px solid #d8eaf5;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer;color:#9ab0c4">閉じる</button>
+  <button onclick="applyCar()" style="flex:2;padding:12px;background:linear-gradient(135deg,#7c6cf0,#5040c0);border:none;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer;color:#fff">&#10003; イベントに反映</button>
+</div>
+<div style="margin-top:8px;font-size:10px;color:#9ab0c4;text-align:center">※ 購入費は臨時支出、維持費は支出増加としてライフイベントに追加されます</div>
+```
+
+  </div>
+</div>
+
+<!-- 教育費モーダル -->
+
+<div class="modal-overlay" id="eduModal">
+  <div class="modal-box" style="max-height:92vh;overflow-y:auto;padding:22px 20px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <span style="font-size:26px">&#127979;</span>
+      <h3 style="margin:0">教育費シミュレーター</h3>
+    </div>
+    <p style="margin-bottom:16px">子どもの進学コースから教育費をイベントに追加します</p>
+    <div class="furu-row2">
+      <div class="furu-field">
+        <label>子どもの現在年齢</label>
+        <div class="exp-wrap"><input type="number" id="edu_childage" value="0" min="0" max="18" inputmode="decimal" oninput="calcEdu()"><span class="exp-unit">歳</span></div>
+      </div>
+      <div class="furu-field">
+        <label>親の現在年齢</label>
+        <div class="exp-wrap"><input type="number" id="edu_parentage" value="35" inputmode="decimal" oninput="calcEdu()"><span class="exp-unit">歳</span></div>
+      </div>
+    </div>
+    <div class="furu-field" style="margin-bottom:12px">
+      <label>進学コース</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
+        <label class="edu-course-btn"><input type="radio" name="edu_course" value="all_pub" checked onchange="calcEdu()"> &#127968; 全部公立</label>
+        <label class="edu-course-btn"><input type="radio" name="edu_course" value="uni_pri" onchange="calcEdu()"> &#127979; 大学のみ私立</label>
+        <label class="edu-course-btn"><input type="radio" name="edu_course" value="hi_pri" onchange="calcEdu()"> &#127979; 高校〜私立</label>
+        <label class="edu-course-btn"><input type="radio" name="edu_course" value="all_pri" onchange="calcEdu()"> &#127775; 全部私立</label>
+      </div>
+    </div>
+    <div id="eduResult" style="margin-top:14px"></div>
+    <div id="eduEvents" style="margin-top:10px;background:#e4f5ee;border-radius:12px;padding:12px 14px;font-size:12px;color:#106040;line-height:1.8;display:none"></div>
+    <div style="margin-top:16px;display:flex;gap:8px">
+      <button onclick="closeEduModal()" style="flex:1;padding:12px;background:#fff;border:2px solid #d8eaf5;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer;color:#9ab0c4">閉じる</button>
+      <button onclick="applyEdu()" style="flex:2;padding:12px;background:linear-gradient(135deg,#3dba8c,#2ea87a);border:none;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer;color:#fff">&#10003; イベントに反映</button>
+    </div>
+    <div style="margin-top:8px;font-size:10px;color:#9ab0c4;text-align:center">※ 各段階の入学費用が臨時支出としてイベントに追加されます</div>
+  </div>
+</div>
+
+<!-- 年金シミュレーターモーダル -->
+
+<div class="modal-overlay" id="nenkinModal">
+  <div class="modal-box" style="max-height:92vh;overflow-y:auto;padding:22px 20px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <span style="font-size:26px">&#128188;</span>
+      <h3 style="margin:0">年金受取額シミュレーター</h3>
+    </div>
+    <p style="margin-bottom:16px">職業・年収から年金受取額を概算します</p>
+
+```
+<div class="furu-field">
+  <label>職業・雇用形態</label>
+  <select id="nk_job" onchange="calcNenkin()" style="width:100%;padding:11px 12px;border:2px solid #d8eaf5;border-radius:10px;font-size:14px;font-family:'Noto Sans JP',sans-serif;outline:none;-webkit-appearance:none;background:#fafcff;color:#1a2a3a">
+    <option value="company">会社員（厚生年金あり）</option>
+    <option value="civil">公務員（共済年金→厚生年金）</option>
+    <option value="part">パート・アルバイト（週20h以上・社保加入）</option>
+    <option value="part_small">パート・アルバイト（社保未加入）</option>
+    <option value="self">自営業・フリーランス</option>
+    <option value="housewife">専業主婦（夫）・第3号被保険者</option>
+  </select>
+</div>
+
+<div class="furu-row2">
+  <div class="furu-field">
+    <label>平均年収</label>
+    <div class="exp-wrap"><input type="number" id="nk_income" value="500" inputmode="decimal" oninput="calcNenkin()"><span class="exp-unit">万円</span></div>
+  </div>
+  <div class="furu-field">
+    <label>加入年数 <span style="font-size:10px;color:#9ab0c4">目安</span></label>
+    <div class="exp-wrap"><input type="number" id="nk_years" value="40" min="1" max="45" inputmode="decimal" oninput="calcNenkin()"><span class="exp-unit">年</span></div>
+  </div>
+</div>
+
+<div class="furu-row2">
+  <div class="furu-field">
+    <label>受給開始年齢</label>
+    <select id="nk_start" onchange="calcNenkin()" style="width:100%;padding:11px 12px;border:2px solid #d8eaf5;border-radius:10px;font-size:14px;font-family:'Noto Sans JP',sans-serif;outline:none;-webkit-appearance:none;background:#fafcff;color:#1a2a3a">
+      <option value="60">60歳（繰上げ・減額）</option>
+      <option value="61">61歳（繰上げ・減額）</option>
+      <option value="62">62歳（繰上げ・減額）</option>
+      <option value="63">63歳（繰上げ・減額）</option>
+      <option value="64">64歳（繰上げ・減額）</option>
+      <option value="65" selected>65歳（標準）</option>
+      <option value="66">66歳（繰下げ・増額）</option>
+      <option value="67">67歳（繰下げ・増額）</option>
+      <option value="68">68歳（繰下げ・増額）</option>
+      <option value="69">69歳（繰下げ・増額）</option>
+      <option value="70">70歳（繰下げ・増額）</option>
+      <option value="71">71歳（繰下げ・増額）</option>
+      <option value="72">72歳（繰下げ・増額）</option>
+      <option value="73">73歳（繰下げ・増額）</option>
+      <option value="74">74歳（繰下げ・増額）</option>
+      <option value="75">75歳（繰下げ・最大増額）</option>
+    </select>
+  </div>
+  <div class="furu-field">
+    <label>配偶者の年金</label>
+    <select id="nk_spouse" onchange="calcNenkin()" style="width:100%;padding:11px 12px;border:2px solid #d8eaf5;border-radius:10px;font-size:14px;font-family:'Noto Sans JP',sans-serif;outline:none;-webkit-appearance:none;background:#fafcff;color:#1a2a3a">
+      <option value="0">なし／別途計算</option>
+      <option value="housewife">配偶者が第3号（専業主婦夫）</option>
+      <option value="company">配偶者も会社員</option>
+    </select>
+  </div>
+</div>
+
+<!-- 結果 -->
+<div id="nenkinResult" style="margin-top:16px"></div>
+<div id="nenkinNote" style="margin-top:8px;font-size:11px;color:#9ab0c4;line-height:1.6;background:#f8fcff;border-radius:10px;padding:10px 12px"></div>
+
+<div style="margin-top:16px">
+  <button onclick="closeNenkinModal()" style="width:100%;padding:13px;background:linear-gradient(135deg,#0ea898,#3b9edd);border:none;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;cursor:pointer;color:#fff">閉じる</button>
+</div>
+<div style="margin-top:8px;font-size:10px;color:#9ab0c4;text-align:center">※ 概算です。実際の受給額はねんきん定期便等でご確認ください。</div>
+```
+
+  </div>
+</div>
+
+<!-- ふるさと納税モーダル -->
+
+<div class="modal-overlay" id="furusatoModal">
+  <div class="modal-box" style="max-height:92vh;overflow-y:auto;padding:22px 20px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <span style="font-size:26px">&#127873;</span>
+      <h3 style="margin:0">ふるさと納税シミュレーター</h3>
+    </div>
+    <p style="margin-bottom:16px">年収や家族構成から寄付上限額の目安を計算します</p>
+
+```
+<!-- 入力 -->
+<div class="furu-field">
+  <label>年収</label>
+  <div class="exp-wrap" style="width:100%"><input type="number" id="furu_income" value="500" inputmode="decimal" oninput="calcFurusato()"><span class="exp-unit">万円</span></div>
+</div>
+<div class="furu-row2">
+  <div class="furu-field">
+    <label>配偶者</label>
+    <select id="furu_spouse" onchange="calcFurusato()" style="width:100%;padding:10px 12px;border:2px solid #d8eaf5;border-radius:10px;font-size:14px;font-family:'Noto Sans JP',sans-serif;outline:none;-webkit-appearance:none;background:#fafcff">
+      <option value="0">なし</option>
+      <option value="1">あり</option>
+    </select>
+  </div>
+  <div class="furu-field">
+    <label>扶養家族</label>
+    <div class="exp-wrap"><input type="number" id="furu_dependents" value="0" min="0" inputmode="decimal" oninput="calcFurusato()"><span class="exp-unit">人</span></div>
+  </div>
+</div>
+<div class="furu-row2">
+  <div class="furu-field">
+    <label>住宅ローン控除</label>
+    <select id="furu_mortgage" onchange="calcFurusato()" style="width:100%;padding:10px 12px;border:2px solid #d8eaf5;border-radius:10px;font-size:14px;font-family:'Noto Sans JP',sans-serif;outline:none;-webkit-appearance:none;background:#fafcff">
+      <option value="0">なし</option>
+      <option value="1">あり</option>
+    </select>
+  </div>
+  <div class="furu-field">
+    <label>iDeCo掛金</label>
+    <div class="exp-wrap"><input type="number" id="furu_ideco" value="0" inputmode="decimal" oninput="calcFurusato()"><span class="exp-unit">円/月</span></div>
+  </div>
+</div>
+<div class="furu-field">
+  <label>今年すでに寄付した額</label>
+  <div class="exp-wrap" style="width:100%"><input type="number" id="furu_done" value="0" inputmode="decimal" oninput="calcFurusato()"><span class="exp-unit">円</span></div>
+</div>
+
+<!-- 結果 -->
+<div id="furusatoResult" style="margin-top:16px"></div>
+
+<!-- 住宅ローン警告 -->
+<div id="furusatoWarn" style="display:none;background:#fff1e6;border:1.5px solid #ffc090;border-radius:12px;padding:12px 14px;margin-top:10px;font-size:12px;color:#903010;line-height:1.6">
+  &#9888; 住宅ローン控除適用中のため、所得税の残額が少なくなりがちです。控えめな寄付をおすすめします。
+</div>
+
+<div style="margin-top:16px;display:flex;gap:8px">
+  <button onclick="resetFurusato()" style="flex:1;padding:12px;background:#fff;border:2px solid #d8eaf5;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer;color:#9ab0c4">リセット</button>
+  <button onclick="closeFurusatoModal()" style="flex:2;padding:12px;background:linear-gradient(135deg,#0ea898,#3b9edd);border:none;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer;color:#fff">閉じる</button>
+</div>
+<div style="margin-top:10px;font-size:10px;color:#9ab0c4;text-align:center;line-height:1.6">※ あくまで概算です。正確な上限額はご自身の確定申告状況や自治体ツールでご確認ください。</div>
 ```
 
   </div>
@@ -645,14 +1007,14 @@ border:1.5px solid transparent; position:relative;
 </div>
 
 <div class="bottom-nav" id="bottomNav">
-  <button class="nav-item active" onclick="goBack()">
+  <button class="nav-item" id="nav-home" onclick="navHome()">
     <span class="nav-icon">&#127968;</span>ホーム
   </button>
-  <button class="nav-item" onclick="document.getElementById('tableContainer').scrollIntoView({behavior:'smooth'})">
+  <button class="nav-item" id="nav-detail" onclick="navDetail()">
     <span class="nav-icon">&#128203;</span>詳細
   </button>
-  <button class="nav-item" onclick="saveSim()">
-    <span class="nav-icon">&#128190;</span>保存
+  <button class="nav-item" id="nav-tools" onclick="navTools()">
+    <span class="nav-icon">&#128736;</span>補助
   </button>
 </div>
 
@@ -675,15 +1037,45 @@ function tog(id, btn) {
 function goResult() {
   document.getElementById('page-input').classList.remove('active');
   document.getElementById('page-result').classList.add('active');
-  document.getElementById('bottomNav').classList.add('show');
   window.scrollTo(0, 0);
+  updateNav('home');
 }
 
 function goBack() {
   document.getElementById('page-result').classList.remove('active');
   document.getElementById('page-input').classList.add('active');
-  document.getElementById('bottomNav').classList.remove('show');
   window.scrollTo(0, 0);
+  updateNav('home');
+}
+
+function updateNav(active) {
+  ['home','detail','tools'].forEach(function(id) {
+    var el = document.getElementById('nav-' + id);
+    if (el) el.classList.toggle('active', id === active);
+  });
+}
+
+function navHome() {
+  var resultPage = document.getElementById('page-result');
+  if (resultPage.classList.contains('active')) {
+    goBack();
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  updateNav('home');
+}
+
+function navDetail() {
+  var resultPage = document.getElementById('page-result');
+  if (!resultPage.classList.contains('active')) return;
+  var el = document.getElementById('tableContainer');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  updateNav('detail');
+}
+
+function navTools() {
+  openToolsModal();
+  updateNav('tools');
 }
 
 function addRate() {
@@ -1349,9 +1741,574 @@ function renderSaved() {
 document.getElementById('runBtn').addEventListener('click', run);
 document.getElementById('next5Btn').addEventListener('click', function() { maxYr += 5; renderTable(); renderChart(); if (monthOpen) renderMonthlyTable(monthAge); });
 document.getElementById('saveBtn').addEventListener('click', saveSim);
-document.getElementById('philoBtn').addEventListener('click', function() { var b = document.getElementById('philoBox'); b.style.display = b.style.display === 'none' ? 'block' : 'none'; });
 
+updateNav('home');
 renderSaved();
+
+// ===== 年金シミュレーター =====
+var nenkinResult = null;
+
+function openNenkinModal() {
+  loadNenkin();
+  calcNenkin();
+  document.getElementById('nenkinModal').classList.add('show');
+}
+
+function closeNenkinModal() {
+  document.getElementById('nenkinModal').classList.remove('show');
+}
+
+function loadNenkin() {
+  try {
+    var saved = JSON.parse(localStorage.getItem('nenkinData') || '{}');
+    if (saved.job)    document.getElementById('nk_job').value    = saved.job;
+    if (saved.income) document.getElementById('nk_income').value = saved.income;
+    if (saved.years)  document.getElementById('nk_years').value  = saved.years;
+    if (saved.start)  document.getElementById('nk_start').value  = saved.start;
+    if (saved.spouse) document.getElementById('nk_spouse').value = saved.spouse;
+  } catch(e) {}
+}
+
+function saveNenkin() {
+  localStorage.setItem('nenkinData', JSON.stringify({
+    job:    document.getElementById('nk_job').value,
+    income: document.getElementById('nk_income').value,
+    years:  document.getElementById('nk_years').value,
+    start:  document.getElementById('nk_start').value,
+    spouse: document.getElementById('nk_spouse').value
+  }));
+}
+
+function calcNenkin() {
+  saveNenkin();
+
+  var job    = document.getElementById('nk_job').value;
+  var income = Number(document.getElementById('nk_income').value) || 0;
+  var years  = Math.min(45, Math.max(1, Number(document.getElementById('nk_years').value) || 40));
+  var start  = Number(document.getElementById('nk_start').value) || 65;
+  var spouse = document.getElementById('nk_spouse').value;
+
+  // 国民年金（基礎年金）: 満額 約78万円/年（2024年度）
+  // 加入年数40年で満額、按分計算
+  var kisoFull = 78 * 10000; // 円/年
+  var kiso = Math.round(kisoFull * Math.min(years, 40) / 40);
+
+  // 厚生年金（報酬比例部分）
+  // 簡易計算: 平均標準報酬月額 × 5.481/1000 × 加入月数
+  var kosei = 0;
+  var avgMonthlyIncome = income * 10000 / 12;
+  // 上限62万円/月でキャップ
+  avgMonthlyIncome = Math.min(avgMonthlyIncome, 620000);
+
+  if (job === 'company' || job === 'civil') {
+    kosei = Math.round(avgMonthlyIncome * 5.481 / 1000 * years * 12);
+  } else if (job === 'part') {
+    // 社保加入パートは収入按分（正社員の60%程度と仮定）
+    kosei = Math.round(avgMonthlyIncome * 5.481 / 1000 * years * 12 * 0.6);
+  } else if (job === 'part_small' || job === 'self' || job === 'housewife') {
+    kosei = 0;
+  }
+
+  // 合計（65歳基準）
+  var total65 = kiso + kosei;
+
+  // 配偶者の基礎年金を加算
+  var spouseKiso = 0;
+  if (spouse === 'housewife') {
+    spouseKiso = Math.round(kisoFull * Math.min(years, 40) / 40);
+  } else if (spouse === 'company') {
+    // 配偶者は別途計算として表示のみ
+    spouseKiso = 0;
+  }
+
+  // 繰上げ・繰下げ補正
+  // 繰上げ: 1ヶ月あたり-0.4%（2022年4月以降）
+  // 繰下げ: 1ヶ月あたり+0.7%
+  var rate = 1.0;
+  var diffMonths = (start - 65) * 12;
+  if (diffMonths < 0) {
+    rate = 1 + diffMonths * 0.004; // 繰上げ減額
+  } else if (diffMonths > 0) {
+    rate = 1 + diffMonths * 0.007; // 繰下げ増額
+  }
+  rate = Math.max(0.76, Math.min(1.84, rate)); // 上下限クリップ
+
+  var totalYear = Math.round((total65 + spouseKiso) * rate);
+  var totalMonth = Math.round(totalYear / 12);
+  var totalMan = Math.round(totalYear / 10000);
+
+  nenkinResult = { totalYear: totalYear, totalMonth: totalMonth, totalMan: totalMan, startAge: start, kiso: kiso, kosei: kosei, spouseKiso: spouseKiso, rate: rate };
+
+  // 結果表示
+  var rateStr = rate >= 1 ? '+' + Math.round((rate - 1) * 100) + '%' : Math.round((rate - 1) * 100) + '%';
+  var html = '<div class="furu-result-grid">'
+    + '<div class="furu-kpi blue"><div class="fk-label">月額受取目安</div><div class="fk-value">' + totalMonth.toLocaleString() + '</div><div class="fk-unit">円/月</div></div>'
+    + '<div class="furu-kpi teal"><div class="fk-label">年額受取目安</div><div class="fk-value">' + totalMan + '</div><div class="fk-unit">万円/年</div></div>'
+    + '<div class="furu-kpi orange"><div class="fk-label">基礎年金</div><div class="fk-value">' + Math.round(kiso / 10000) + '</div><div class="fk-unit">万円/年</div></div>'
+    + '<div class="furu-kpi green"><div class="fk-label">受給開始' + start + '歳</div><div class="fk-value">' + rateStr + '</div><div class="fk-unit">' + (rate >= 1 ? '繰下げ増額' : '繰上げ減額') + '</div></div>'
+    + '</div>';
+
+  if (spouseKiso > 0) {
+    html += '<div style="margin-top:10px;background:#e4faf7;border-radius:12px;padding:10px 14px;font-size:12px;color:#0a7870"><b>配偶者の基礎年金含む：</b>' + Math.round(spouseKiso/10000) + '万円/年を加算済み</div>';
+  }
+  document.getElementById('nenkinResult').innerHTML = html;
+
+  // 注記
+  var notes = [];
+  if (job === 'self' || job === 'part_small') notes.push('国民年金のみの試算です。任意加入の付加年金・iDeCoも検討を。');
+  if (job === 'housewife') notes.push('第3号期間中は保険料免除で基礎年金のみ受給できます。');
+  if (start < 65) notes.push('繰上げ受給は一度選択すると変更できません。生涯減額される点に注意。');
+  if (start > 65) notes.push('繰下げで受給額が増えますが、受給総額の損益分岐点は約80歳前後です。');
+  if (spouse === 'company') notes.push('配偶者が会社員の場合、配偶者の年金は別途計算が必要です。');
+  document.getElementById('nenkinNote').innerHTML = notes.length ? notes.join('<br>') : '※ ねんきん定期便で実際の加入記録を確認することをおすすめします。';
+}
+
+// ===== 補助ツール一覧モーダル =====
+function openToolsModal()  { document.getElementById('toolsModal').classList.add('show'); }
+function closeToolsModal() { document.getElementById('toolsModal').classList.remove('show'); }
+
+// ===== 車購入シミュレーター =====
+var carEventsData = [];
+
+function openCarModal() {
+  try {
+    var s = JSON.parse(localStorage.getItem('carData') || '{}');
+    if (s.age)     document.getElementById('car_age').value     = s.age;
+    if (s.price)   document.getElementById('car_price').value   = s.price;
+    if (s.monthly) document.getElementById('car_monthly').value = s.monthly;
+    if (s.cycle)   document.getElementById('car_cycle').value   = s.cycle;
+    if (s.times !== undefined) document.getElementById('car_times').value = s.times;
+    if (s.trade !== undefined) document.getElementById('car_trade').value = s.trade;
+  } catch(e) {}
+  calcCar();
+  document.getElementById('carModal').classList.add('show');
+}
+function closeCarModal() { document.getElementById('carModal').classList.remove('show'); }
+
+// ===== カーライフ総コスト計算機 =====
+var carCycle = 3;
+var carStatus = 'none'; // 'none' or 'have'
+var carEventsData = [];
+
+function openCarModal() {
+  try {
+    var s = JSON.parse(localStorage.getItem('carData3') || '{}');
+    if (s.currentage)   document.getElementById('car_currentage').value   = s.currentage;
+    if (s.endage)       document.getElementById('car_endage').value       = s.endage;
+    if (s.price)        document.getElementById('car_price').value        = s.price;
+    if (s.trade)        document.getElementById('car_trade').value        = s.trade;
+    if (s.monthly)      document.getElementById('car_monthly').value      = s.monthly;
+    if (s.tax)          document.getElementById('car_tax').value          = s.tax;
+    if (s.cycle)        carCycle = s.cycle;
+    if (s.status)       { carStatus = s.status; updateCarStatusUI(); }
+    if (s.currentSell)  document.getElementById('car_current_sell').value = s.currentSell;
+  } catch(e) {}
+  calcCar();
+  document.getElementById('carModal').classList.add('show');
+}
+function closeCarModal() { document.getElementById('carModal').classList.remove('show'); }
+
+function setCarStatus(status, btn) {
+  carStatus = status;
+  updateCarStatusUI();
+  calcCar();
+}
+
+function updateCarStatusUI() {
+  document.getElementById('car_status_none').classList.toggle('active', carStatus === 'none');
+  document.getElementById('car_status_have').classList.toggle('active', carStatus === 'have');
+  document.getElementById('car_current_sell_wrap').style.display = carStatus === 'have' ? 'block' : 'none';
+}
+
+function setCycle(n, btn) {
+  carCycle = n;
+  document.querySelectorAll('.car-cycle-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('car_cycle_custom').style.display = n === 0 ? 'block' : 'none';
+  calcCar();
+}
+
+function calcCar() {
+  var currentAge  = Number(document.getElementById('car_currentage').value) || 35;
+  var endAge      = Number(document.getElementById('car_endage').value) || 70;
+  var price       = Number(document.getElementById('car_price').value) || 0;
+  var trade       = Number(document.getElementById('car_trade').value) || 0;
+  var monthly     = Number(document.getElementById('car_monthly').value) || 0;
+  var tax         = Number(document.getElementById('car_tax').value) || 0;
+  var currentSell = carStatus === 'have' ? (Number(document.getElementById('car_current_sell').value) || 0) : 0;
+  var cycle       = carCycle === 0
+    ? (Number(document.getElementById('car_cycle_input').value) || 3)
+    : carCycle;
+  if (cycle < 1) cycle = 1;
+
+  localStorage.setItem('carData3', JSON.stringify({
+    currentage:currentAge, endage:endAge, price:price, trade:trade,
+    monthly:monthly, tax:tax, cycle:cycle, status:carStatus, currentSell:currentSell
+  }));
+
+  var totalYears = Math.max(0, endAge - currentAge);
+  var times      = Math.floor(totalYears / cycle);
+
+  // 初回費用
+  // 車なし：車両価格をそのまま支出
+  // 今の車売って買い替え：車両価格 - 今の車の売却額
+  var firstCost  = carStatus === 'have' ? Math.max(0, price - currentSell) : price;
+  // 2回目以降：車両価格 - 乗り換え時売却額
+  var laterCost  = Math.max(0, price - trade);
+  var totalBuy   = firstCost + laterCost * Math.max(0, times - 1);
+
+  // 維持費
+  var totalMonthly = monthly * 12 * totalYears;
+  var totalTax     = tax * totalYears;
+
+  // 車検（3年サイクルは乗り換え前なのでなし、それ以上は発生）
+  var shakenCount = 0;
+  if (cycle > 3) {
+    var shakenInCycle = 1 + Math.floor((cycle - 3) / 2);
+    shakenCount = shakenInCycle * times;
+  }
+  var totalShaken = shakenCount * 8;
+
+  var grandTotal = totalBuy + totalMonthly + totalTax + totalShaken;
+  var perYear    = totalYears > 0 ? Math.round(grandTotal / totalYears) : 0;
+  var perMonth   = Math.round(perYear / 12);
+
+  // イベントデータ
+  carEventsData = [];
+  carEventsData.push({ age: currentAge, type: 'oneExpense', amount: firstCost, note: carStatus === 'have' ? '車買い替え（売却後実質' + firstCost + '万）' : '車購入（初回）' });
+  carEventsData.push({ age: currentAge, type: 'expenseAdd', amount: monthly, note: '車月維持費' });
+  for (var i = 1; i < times; i++) {
+    var replaceAge = currentAge + cycle * i;
+    if (replaceAge < endAge) {
+      carEventsData.push({ age: replaceAge, type: 'oneExpense', amount: laterCost, note: '車乗り換え（実質' + laterCost + '万）' });
+    }
+  }
+
+  // 結果
+  var firstLabel = carStatus === 'have'
+    ? '初回（売却後）' + firstCost + '万'
+    : '初回購入 ' + firstCost + '万';
+
+  var html = '<div style="background:linear-gradient(135deg,#1a3560,#0d2040);border-radius:16px;padding:18px 20px;margin-bottom:12px">'
+    + '<div style="color:rgba(255,255,255,.6);font-size:12px;margin-bottom:4px">生涯カーライフ総コスト</div>'
+    + '<div style="font-family:Nunito,sans-serif;font-weight:900;font-size:32px;color:#fff">' + grandTotal.toLocaleString() + '<span style="font-size:16px;margin-left:4px">万円</span></div>'
+    + '<div style="color:rgba(255,255,255,.55);font-size:12px;margin-top:6px">' + currentAge + '歳〜' + endAge + '歳の' + totalYears + '年間 / ' + cycle + '年ごと乗り換え' + times + '回</div>'
+    + '</div>'
+    + '<div class="furu-result-grid">'
+    + '<div class="furu-kpi blue"><div class="fk-label">車両費合計</div><div class="fk-value">' + totalBuy.toLocaleString() + '</div><div class="fk-unit">万円</div></div>'
+    + '<div class="furu-kpi orange"><div class="fk-label">維持費合計</div><div class="fk-value">' + totalMonthly.toLocaleString() + '</div><div class="fk-unit">万円</div></div>'
+    + '<div class="furu-kpi teal"><div class="fk-label">1年あたり</div><div class="fk-value">' + perYear.toLocaleString() + '</div><div class="fk-unit">万円/年</div></div>'
+    + '<div class="furu-kpi green"><div class="fk-label">1ヶ月あたり</div><div class="fk-value">' + perMonth.toLocaleString() + '</div><div class="fk-unit">万円/月</div></div>'
+    + '</div>'
+    + '<div style="margin-top:10px;font-size:11px;color:#9ab0c4;line-height:1.7;background:#f8fcff;border-radius:10px;padding:10px 12px">'
+    + firstLabel + ' ＋ 乗り換え' + (times > 1 ? (times - 1) + '回×' + laterCost + '万' : '0回') + ' ＋ 維持費' + totalMonthly + '万 ＋ 自動車税' + totalTax + '万' + (totalShaken > 0 ? ' ＋ 車検' + totalShaken + '万' : '')
+    + '<br><br><b>反映されるイベント：</b><br>'
+    + carEventsData.map(function(e) { return '・' + e.age + '歳：' + e.note + (e.type === 'expenseAdd' ? '（月+' + e.amount + '万）' : ''); }).join('<br>')
+    + '</div>';
+
+  document.getElementById('carResult').innerHTML = html;
+}
+
+function calcCar() {
+  var currentAge = Number(document.getElementById('car_currentage').value) || 35;
+  var endAge     = Number(document.getElementById('car_endage').value) || 70;
+  var price      = Number(document.getElementById('car_price').value) || 0;
+  var trade      = Number(document.getElementById('car_trade').value) || 0;
+  var monthly    = Number(document.getElementById('car_monthly').value) || 0;
+  var tax        = Number(document.getElementById('car_tax').value) || 0;
+  var cycle      = carCycle === 0
+    ? (Number(document.getElementById('car_cycle_input').value) || 3)
+    : carCycle;
+
+  if (cycle < 1) cycle = 1;
+  localStorage.setItem('carData3', JSON.stringify({ currentage:currentAge, endage:endAge, price:price, trade:trade, monthly:monthly, tax:tax, cycle:cycle }));
+
+  var totalYears = Math.max(0, endAge - currentAge);
+  var times      = Math.floor(totalYears / cycle); // 乗り換え回数
+  var netBuy     = Math.max(0, price - trade);     // 1回あたりの実質購入費
+
+  // 初回購入（下取りなし）
+  var firstBuy   = price;
+  // 2回目以降は下取りあり
+  var laterBuys  = netBuy * Math.max(0, times - 1);
+  var totalBuy   = firstBuy + laterBuys;
+
+  // 維持費（月額×12×年数）
+  var totalMonthly = monthly * 12 * totalYears;
+
+  // 自動車税（年額×年数）
+  var totalTax = tax * totalYears;
+
+  // 3年サイクルの場合、初回車検は3年後なので乗り換え前に車検なし
+  // 車検は cycle > 3 の場合のみ発生（初回3年、以降2年ごと）
+  var shakenCount = 0;
+  if (cycle > 3) {
+    // 1サイクル内で初回3年後+2年ごと
+    var shakenInCycle = 1 + Math.floor((cycle - 3) / 2);
+    shakenCount = shakenInCycle * times;
+  }
+  var shakenCostPer = 8; // 車検1回あたり概算8万円
+  var totalShaken = shakenCount * shakenCostPer;
+
+  var grandTotal = totalBuy + totalMonthly + totalTax + totalShaken;
+  var perYear    = totalYears > 0 ? Math.round(grandTotal / totalYears) : 0;
+  var perMonth   = Math.round(perYear / 12);
+
+  // イベントデータ生成
+  carEventsData = [];
+  // 初回購入
+  carEventsData.push({ age: currentAge, type: 'oneExpense', amount: price, note: '車購入（初回）' });
+  // 維持費
+  carEventsData.push({ age: currentAge, type: 'expenseAdd', amount: monthly, note: '車月維持費' });
+  // 乗り換え（2回目以降）
+  for (var i = 1; i < times; i++) {
+    var replaceAge = currentAge + cycle * i;
+    if (replaceAge < endAge) {
+      carEventsData.push({ age: replaceAge, type: 'oneExpense', amount: netBuy, note: '車乗り換え' + (i+1) + '回目（実質' + netBuy + '万）' });
+    }
+  }
+
+  // 結果表示
+  var html = '<div style="background:linear-gradient(135deg,#1a3560,#0d2040);border-radius:16px;padding:18px 20px;margin-bottom:12px">'
+    + '<div style="color:rgba(255,255,255,.6);font-size:12px;margin-bottom:4px">生涯カーライフ総コスト</div>'
+    + '<div style="font-family:Nunito,sans-serif;font-weight:900;font-size:32px;color:#fff">' + grandTotal.toLocaleString() + '<span style="font-size:16px;margin-left:4px">万円</span></div>'
+    + '<div style="color:rgba(255,255,255,.55);font-size:12px;margin-top:6px">' + currentAge + '歳〜' + endAge + '歳の' + totalYears + '年間 / ' + cycle + '年ごとに乗り換え' + (times > 0 ? times + '回' : '') + '</div>'
+    + '</div>'
+    + '<div class="furu-result-grid">'
+    + '<div class="furu-kpi blue"><div class="fk-label">車両費合計</div><div class="fk-value">' + totalBuy.toLocaleString() + '</div><div class="fk-unit">万円</div></div>'
+    + '<div class="furu-kpi orange"><div class="fk-label">維持費合計</div><div class="fk-value">' + totalMonthly.toLocaleString() + '</div><div class="fk-unit">万円</div></div>'
+    + '<div class="furu-kpi teal"><div class="fk-label">1年あたり</div><div class="fk-value">' + perYear.toLocaleString() + '</div><div class="fk-unit">万円/年</div></div>'
+    + '<div class="furu-kpi green"><div class="fk-label">1ヶ月あたり</div><div class="fk-value">' + perMonth.toLocaleString() + '</div><div class="fk-unit">万円/月</div></div>'
+    + '</div>'
+    + '<div style="margin-top:10px;font-size:11px;color:#9ab0c4;line-height:1.6;background:#f8fcff;border-radius:10px;padding:10px 12px">'
+    + '内訳：車両費 ' + totalBuy + '万 ＋ 月維持費 ' + totalMonthly + '万 ＋ 自動車税 ' + totalTax + '万' + (totalShaken > 0 ? ' ＋ 車検 ' + totalShaken + '万' : ' ＋ 車検0万（乗り換え前なし）')
+    + '</div>';
+
+  // イベント一覧
+  if (carEventsData.length) {
+    html += '<div style="margin-top:10px;background:#f0eeff;border-radius:12px;padding:12px 14px;font-size:12px;color:#5040c0;line-height:1.9">'
+      + '<b>反映されるイベント：</b><br>'
+      + carEventsData.map(function(e) { return '・' + e.age + '歳：' + e.note + (e.type === 'expenseAdd' ? '（月+' + e.amount + '万）' : '（−' + e.amount + '万）'); }).join('<br>')
+      + '</div>';
+  }
+
+  document.getElementById('carResult').innerHTML = html;
+}
+
+function applyCar() {
+  if (!carEventsData.length) return;
+  var eventBody = document.getElementById('eventBody');
+  if (!eventBody.classList.contains('open')) {
+    var togBtn = document.querySelector('[onclick*="eventBody"]');
+    if (togBtn) tog('eventBody', togBtn);
+  }
+  carEventsData.forEach(function(ev) {
+    addEvent();
+    var container = document.getElementById('eventList');
+    var last = container.lastElementChild;
+    last.querySelector('.age').value    = ev.age;
+    last.querySelector('.type').value   = ev.type;
+    last.querySelector('.amount').value = ev.amount;
+    last.querySelector('.note').value   = ev.note;
+  });
+  closeCarModal();
+  var resultPage = document.getElementById('page-result');
+  if (resultPage.classList.contains('active')) goBack();
+  showToast('&#10003; カーライフのイベントを' + carEventsData.length + '件追加しました');
+}
+
+// ===== 教育費シミュレーター =====
+var eduEventsData = [];
+
+// 文科省データベースの概算（万円）
+var EDU_COST = {
+  nursery:    { pub: 22,  pri: 53  }, // 幼稚園3年間
+  elem:       { pub: 211, pri: 960 }, // 小学校6年間
+  middle:     { pub: 161, pri: 421 }, // 中学校3年間
+  high:       { pub: 154, pri: 316 }, // 高校3年間
+  uni_hum:    { pub: 243, pri: 400 }, // 大学4年間（文系）
+  uni_sci:    { pub: 255, pri: 550 }, // 大学4年間（理系）
+};
+
+function openEduModal() {
+  calcEdu();
+  document.getElementById('eduModal').classList.add('show');
+}
+function closeEduModal() { document.getElementById('eduModal').classList.remove('show'); }
+
+function calcEdu() {
+  var childAge  = Number(document.getElementById('edu_childage').value) || 0;
+  var parentAge = Number(document.getElementById('edu_parentage').value) || 35;
+  var course    = document.querySelector('input[name="edu_course"]:checked');
+  var courseVal = course ? course.value : 'all_pub';
+
+  var isPriNursery = courseVal === 'all_pri';
+  var isPriElem    = courseVal === 'all_pri';
+  var isPriMiddle  = courseVal === 'all_pri';
+  var isPriHigh    = courseVal === 'all_pri' || courseVal === 'hi_pri';
+  var isPriUni     = courseVal === 'all_pri' || courseVal === 'uni_pri' || courseVal === 'hi_pri';
+
+  var costs = [
+    { label: '幼稚園入学', ageChild: 3,  cost: Math.round((isPriNursery ? EDU_COST.nursery.pri : EDU_COST.nursery.pub) / 3) },
+    { label: '小学校入学', ageChild: 6,  cost: Math.round((isPriElem    ? EDU_COST.elem.pri    : EDU_COST.elem.pub)    / 6) },
+    { label: '中学入学',   ageChild: 12, cost: Math.round((isPriMiddle  ? EDU_COST.middle.pri  : EDU_COST.middle.pub)  / 3) },
+    { label: '高校入学',   ageChild: 15, cost: Math.round((isPriHigh    ? EDU_COST.high.pri    : EDU_COST.high.pub)    / 3) },
+    { label: '大学入学',   ageChild: 18, cost: Math.round((isPriUni     ? EDU_COST.uni_hum.pri : EDU_COST.uni_hum.pub) / 4) },
+  ];
+
+  eduEventsData = [];
+  var total = 0;
+
+  costs.forEach(function(c) {
+    if (c.ageChild < childAge) return; // 既に過ぎた段階はスキップ
+    var parentAtEvent = parentAge + (c.ageChild - childAge);
+    eduEventsData.push({ age: parentAtEvent, type: 'expenseAdd', amount: c.cost, note: c.label + '（年間約' + c.cost + '万円）', ageChild: c.ageChild });
+    total += c.cost;
+  });
+
+  // 結果
+  var courseLabel = { all_pub:'全部公立', uni_pri:'大学のみ私立', hi_pri:'高校〜私立', all_pri:'全部私立' }[courseVal];
+  var html = '<div class="furu-result-grid">'
+    + '<div class="furu-kpi green"><div class="fk-label">コース</div><div class="fk-value" style="font-size:14px">' + courseLabel + '</div><div class="fk-unit">&nbsp;</div></div>'
+    + '<div class="furu-kpi blue"><div class="fk-label">年間平均費用目安</div><div class="fk-value">' + Math.round(total / 15) + '</div><div class="fk-unit">万円/年</div></div>'
+    + '</div>';
+  document.getElementById('eduResult').innerHTML = html;
+
+  var evHtml = '<b>追加されるイベント（年間増加額）：</b><br>' + eduEventsData.map(function(e) {
+    return '・親' + e.age + '歳（子' + e.ageChild + '歳）：' + e.label + ' +' + e.amount + '万円/年';
+  }).join('<br>');
+  var evEl = document.getElementById('eduEvents');
+  evEl.innerHTML = evHtml;
+  evEl.style.display = eduEventsData.length ? 'block' : 'none';
+}
+
+function applyEdu() {
+  if (!eduEventsData.length) return;
+  var eventBody = document.getElementById('eventBody');
+  if (!eventBody.classList.contains('open')) {
+    var togBtn = document.querySelector('[onclick*="eventBody"]');
+    if (togBtn) tog('eventBody', togBtn);
+  }
+  eduEventsData.forEach(function(ev) {
+    addEvent();
+    var container = document.getElementById('eventList');
+    var last = container.lastElementChild;
+    last.querySelector('.age').value    = ev.age;
+    last.querySelector('.type').value   = ev.type;
+    last.querySelector('.amount').value = ev.amount;
+    last.querySelector('.note').value   = ev.note;
+  });
+  closeEduModal();
+  var resultPage = document.getElementById('page-result');
+  if (resultPage.classList.contains('active')) goBack();
+  showToast('&#10003; 教育費イベントを' + eduEventsData.length + '件追加しました');
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a3560;color:#fff;padding:12px 20px;border-radius:50px;font-size:13px;font-weight:700;z-index:300;opacity:0;transition:opacity .3s;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.2);font-family:Noto Sans JP,sans-serif;max-width:90vw;text-align:center';
+    document.body.appendChild(t);
+  }
+  t.innerHTML = msg;
+  t.style.opacity = '1';
+  setTimeout(function() { t.style.opacity = '0'; }, 2500);
+}
+
+// ===== ふるさと納税シミュレーター =====
+var FURU_KEYS = ['income','spouse','dependents','mortgage','ideco','done'];
+
+function openFurusatoModal() {
+  loadFurusato();
+  calcFurusato();
+  document.getElementById('furusatoModal').classList.add('show');
+}
+
+function closeFurusatoModal() {
+  document.getElementById('furusatoModal').classList.remove('show');
+}
+
+function loadFurusato() {
+  try {
+    var saved = JSON.parse(localStorage.getItem('furusatoData') || '{}');
+    if (saved.income)     document.getElementById('furu_income').value     = saved.income;
+    if (saved.spouse !== undefined) document.getElementById('furu_spouse').value = saved.spouse;
+    if (saved.dependents !== undefined) document.getElementById('furu_dependents').value = saved.dependents;
+    if (saved.mortgage !== undefined) document.getElementById('furu_mortgage').value = saved.mortgage;
+    if (saved.ideco)      document.getElementById('furu_ideco').value      = saved.ideco;
+    if (saved.done)       document.getElementById('furu_done').value       = saved.done;
+  } catch(e) {}
+}
+
+function saveFurusato() {
+  var data = {
+    income:     document.getElementById('furu_income').value,
+    spouse:     document.getElementById('furu_spouse').value,
+    dependents: document.getElementById('furu_dependents').value,
+    mortgage:   document.getElementById('furu_mortgage').value,
+    ideco:      document.getElementById('furu_ideco').value,
+    done:       document.getElementById('furu_done').value
+  };
+  localStorage.setItem('furusatoData', JSON.stringify(data));
+}
+
+function resetFurusato() {
+  document.getElementById('furu_income').value     = 500;
+  document.getElementById('furu_spouse').value     = 0;
+  document.getElementById('furu_dependents').value = 0;
+  document.getElementById('furu_mortgage').value   = 0;
+  document.getElementById('furu_ideco').value      = 0;
+  document.getElementById('furu_done').value       = 0;
+  localStorage.removeItem('furusatoData');
+  calcFurusato();
+}
+
+function calcFurusato() {
+  saveFurusato();
+
+  var income     = Number(document.getElementById('furu_income').value) || 0;
+  var spouse     = Number(document.getElementById('furu_spouse').value);
+  var dependents = Number(document.getElementById('furu_dependents').value) || 0;
+  var mortgage   = Number(document.getElementById('furu_mortgage').value);
+  var ideco      = Number(document.getElementById('furu_ideco').value) || 0;
+  var done       = Number(document.getElementById('furu_done').value) || 0;
+
+  // 基本上限（年収の2%を円換算）
+  var limit = income * 10000 * 0.02;
+
+  // 補正
+  if (spouse === 1)     limit = limit * 0.9;
+  limit = limit - dependents * 5000;
+  if (mortgage === 1)   limit = limit * 0.8;
+
+  // iDeCo補正（年間掛金の約20%分を上限から減算）
+  var idecoYear = ideco * 12;
+  limit = limit - idecoYear * 0.2;
+
+  // 最低0
+  limit = Math.max(0, Math.round(limit));
+
+  var jibutan   = 2000;
+  var recommend = Math.max(0, limit - jibutan);
+  var remaining = Math.max(0, limit - done);
+  var remainingAfterJibutan = Math.max(0, remaining - (done === 0 ? jibutan : 0));
+
+  // 結果カード
+  var remainColor = remaining <= 0 ? 'red' : 'green';
+  var html = '<div class="furu-result-grid">'
+    + '<div class="furu-kpi orange"><div class="fk-label">寄付上限目安</div><div class="fk-value">' + limit.toLocaleString() + '</div><div class="fk-unit">円</div></div>'
+    + '<div class="furu-kpi teal"><div class="fk-label">自己負担</div><div class="fk-value">2,000</div><div class="fk-unit">円（固定）</div></div>'
+    + '<div class="furu-kpi blue"><div class="fk-label">おすすめ寄付額</div><div class="fk-value">' + recommend.toLocaleString() + '</div><div class="fk-unit">円</div></div>'
+    + '<div class="furu-kpi ' + remainColor + '"><div class="fk-label">あと使える額</div><div class="fk-value">' + remaining.toLocaleString() + '</div><div class="fk-unit">円</div></div>'
+    + '</div>';
+
+  document.getElementById('furusatoResult').innerHTML = html;
+
+  // 住宅ローン警告
+  document.getElementById('furusatoWarn').style.display = mortgage === 1 ? 'block' : 'none';
+}
 
 // ===== 支出詳細モーダル =====
 var EXP_KEYS = ['housing','insurance','phone','utilities','carLoan','allowance','fixedOther','food','dailyGoods','entertainment','variableOther'];
